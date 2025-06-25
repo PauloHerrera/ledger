@@ -1,0 +1,18 @@
+{
+  "name": "loan",
+  "module": "api/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run api/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
