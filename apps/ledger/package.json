@@ -1,5 +1,5 @@
 {
-  "name": "loan",
+  "name": "ledger",
   "module": "src/app.ts",
   "type": "module",
   "private": true,
@@ -23,6 +23,7 @@
     "cors": "^2.8.5",
     "drizzle-orm": "^0.44.2",
     "express": "^5.1.0",
-    "postgres": "^3.4.7"
+    "postgres": "^3.4.7",
+    "zod": "^3.25.67"
   }
 }
