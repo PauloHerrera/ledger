@@ -4,6 +4,7 @@ import CreateLedgerUseCase from "../../application/use-cases/ledgerUseCase";
 import { ledgerSchema } from "../validators/ledgerSchema";
 import { db } from "../../infrastructure/db";
 import type { ApiResponse } from "../types/api";
+
 const ledgerRepo = new LedgerRepository(db);
 
 export const createLedger = async (req: Request, res: Response) => {
@@ -11,9 +12,13 @@ export const createLedger = async (req: Request, res: Response) => {
     const validation = ledgerSchema.safeParse(req.body);
 
     if (!validation.success) {
-      return res.status(400).json({ message: "Invalid ledger data" });
-    }
+      const response: ApiResponse = {
+        message: "Invalid ledger data",
+        error: validation.error.message,
+      };
 
+      return res.status(400).json(response);
+    }
     const ledgerData = validation.data;
     const useCase = new CreateLedgerUseCase(ledgerRepo);
     const ledger = await useCase.execute(ledgerData);

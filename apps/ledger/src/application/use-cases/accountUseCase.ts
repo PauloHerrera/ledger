@@ -9,7 +9,7 @@ export default class CreateAccountUseCase {
   constructor(private accountRepo: IAccountRepository) {}
 
   async execute(data: AccountDTO): Promise<Account> {
-    const account = await this.accountRepo.save(this.mapDTOToAccount(data));
+    const account = await this.accountRepo.create(this.mapDTOToAccount(data));
 
     if (!account) {
       throw new Error("Failed to create ledger");

@@ -5,6 +5,7 @@ import {
   getAccounts,
 } from "../handlers/accountHandler";
 import { createLedger, getLedger, getLedgers } from "../handlers/ledgerHandler";
+import { createJournal } from "../handlers/journalHandler";
 
 const apiRoutes = express.Router();
 
@@ -28,6 +29,11 @@ apiRoutes.get("/ledger/:id", (req, res) => {
 });
 apiRoutes.get("/ledgers", (req, res) => {
   getLedgers(req, res);
+});
+
+// Journal Routes
+apiRoutes.post("/journal", (req, res) => {
+  createJournal(req, res);
 });
 
 export default apiRoutes;

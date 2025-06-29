@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const accountType = [
+export const ACCOUNT_TYPES = [
   "asset",
   "liability",
   "equity",
@@ -11,7 +11,7 @@ export const accountType = [
 export const accountSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   description: z.string(),
-  accountType: z.enum(accountType, {
+  accountType: z.enum(ACCOUNT_TYPES, {
     message: "Invalid account type",
   }),
   ledgerId: z.string().uuid({ message: "Invalid ledger id" }),

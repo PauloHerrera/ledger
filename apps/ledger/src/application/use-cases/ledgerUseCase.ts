@@ -7,7 +7,7 @@ export default class CreateLedgerUseCase {
   constructor(private ledgerRepo: ILedgerRepository) {}
 
   async execute(data: LedgerDTO): Promise<Ledger> {
-    const ledger = await this.ledgerRepo.save(this.mapDTOToLedger(data));
+    const ledger = await this.ledgerRepo.create(this.mapDTOToLedger(data));
 
     if (!ledger) {
       throw new Error("Failed to create ledger");
