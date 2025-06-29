@@ -8,3 +8,5 @@ export const accountTypeEnum = pgEnum("account_type", [
   "revenue",
   "equity",
 ]);
+
+export const operationTypeEnum = pgEnum("operation_tipe", ["debit", "credit"]);

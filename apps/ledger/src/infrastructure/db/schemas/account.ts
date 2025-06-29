@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, jsonb, timestamp } from "drizzle-orm/pg-core";
 import { accountTypeEnum } from "./enums";
 import { ledger } from "./ledger";
 import { relations } from "drizzle-orm";
@@ -8,6 +8,7 @@ export const account = pgTable("accounts", {
   name: text("name").notNull(),
   description: text("description"),
   accountType: accountTypeEnum("account_type").notNull(),
+  metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   ledgerId: uuid("ledger_id").references(() => ledger.id),

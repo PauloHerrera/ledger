@@ -4,7 +4,7 @@ export const ledger = pgTable("ledger", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   description: text("description"),
-  metadata: jsonb("metadata"),
+  metadata: jsonb("metadata"), // remove?
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
