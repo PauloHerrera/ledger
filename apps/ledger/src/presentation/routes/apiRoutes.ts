@@ -5,7 +5,7 @@ import {
   getAccounts,
 } from "../handlers/accountHandler";
 import { createLedger, getLedger, getLedgers } from "../handlers/ledgerHandler";
-import { createJournal } from "../handlers/journalHandler";
+import { createJournal, getJournal, getJournals } from "../handlers/journalHandler";
 
 const apiRoutes = express.Router();
 
@@ -34,6 +34,12 @@ apiRoutes.get("/ledgers", (req, res) => {
 // Journal Routes
 apiRoutes.post("/journal", (req, res) => {
   createJournal(req, res);
+});
+apiRoutes.get("/journal/:id", (req, res) => {
+  getJournal(req, res);
+});
+apiRoutes.get("/journals", (req, res) => {
+  getJournals(req, res);
 });
 
 export default apiRoutes;

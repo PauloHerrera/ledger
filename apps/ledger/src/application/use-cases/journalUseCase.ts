@@ -1,6 +1,6 @@
 import type { IJournalRepository } from "../../infrastructure/repositories/journalRepository";
 import type { IEntryRepository } from "../../infrastructure/repositories/entryRepository";
-import type { NewJournal } from "../../infrastructure/db/schemas/journal";
+import type { NewJournal, Journal } from "../../infrastructure/db/schemas/journal";
 import type { NewEntry } from "../../infrastructure/db/schemas/entry";
 import type { EntryDTO } from "../../presentation/validators/entrySchema";
 import type { JournalDTO } from "../../presentation/validators/journalSchema";
@@ -56,5 +56,37 @@ export default class CreateJournalUseCase {
       journalId,
       amount: entry.amount.toString(),
     }));
+  }
+}
+
+export class GetJournalUseCase {
+  constructor(private journalRepository: IJournalRepository) {}
+
+  async execute(id: string): Promise<Journal> {
+    try {
+      const journal = await this.journalRepository.findById(id);
+      if (!journal) {
+        throw new Error("Journal not found");
+      }
+      return journal;
+    } catch (error) {
+      if (error instanceof Error && error.message === "Journal not found") {
+        throw error;
+      }
+      throw new Error(`Failed to fetch journal: ${error}`);
+    }
+  }
+}
+
+export class GetJournalsUseCase {
+  constructor(private journalRepository: IJournalRepository) {}
+
+  async execute(): Promise<Journal[]> {
+    try {
+      const journals = await this.journalRepository.findAll();
+      return journals;
+    } catch (error) {
+      throw new Error(`Failed to fetch journals: ${error}`);
+    }
   }
 }

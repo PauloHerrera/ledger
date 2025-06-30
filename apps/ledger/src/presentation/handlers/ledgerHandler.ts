@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { LedgerRepository } from "../../infrastructure/repositories/ledgerRepository";
-import CreateLedgerUseCase from "../../application/use-cases/ledgerUseCase";
+import CreateLedgerUseCase, { GetLedgerUseCase, GetLedgersUseCase } from "../../application/use-cases/ledgerUseCase";
 import { ledgerSchema } from "../validators/ledgerSchema";
 import { db } from "../../infrastructure/db";
 import type { ApiResponse } from "../types/api";
@@ -37,15 +37,48 @@ export const createLedger = async (req: Request, res: Response) => {
 };
 
 export const getLedger = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  res.status(200).json({
-    message: "Ledger fetched successfully",
-  });
+    if (!id) {
+      const response: ApiResponse = {
+        message: "Ledger ID is required",
+      };
+      return res.status(400).json(response);
+    }
+
+    const useCase = new GetLedgerUseCase(ledgerRepo);
+    const ledger = await useCase.execute(id);
+
+    const response: ApiResponse = {
+      message: "Ledger fetched successfully",
+      data: ledger,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    if (error instanceof Error && error.message === "Ledger not found") {
+      const response: ApiResponse = {
+        message: "Ledger not found",
+      };
+      return res.status(404).json(response);
+    }
+    res.status(500).json({ message: `Failed to fetch ledger: ${error}` });
+  }
 };
 
 export const getLedgers = async (req: Request, res: Response) => {
-  res.status(200).json({
-    message: "Ledgers fetched successfully",
-  });
+  try {
+    const useCase = new GetLedgersUseCase(ledgerRepo);
+    const ledgers = await useCase.execute();
+
+    const response: ApiResponse = {
+      message: "Ledgers fetched successfully",
+      data: ledgers,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: `Failed to fetch ledgers: ${error}` });
+  }
 };
