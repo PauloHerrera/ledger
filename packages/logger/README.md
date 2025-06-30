@@ -1,4 +1,4 @@
-# @your-org/logger
+# @repo/logger
 
 A reusable logger package for the Turborepo project, built with Pino.
 
@@ -33,7 +33,7 @@ bun add -D pino-pretty # or npm install -D pino-pretty / yarn add -D pino-pretty
 Import the default logger instance. Its behavior will adapt based on the `NODE_ENV` environment variable.
 
 ```typescript
-import logger from '@your-org/logger';
+import logger from '@repo/logger';
 
 logger.info('This is an informational message.');
 logger.warn('This is a warning message.');
@@ -46,7 +46,7 @@ logger.debug('This is a debug message (visible in development).');
 You can also get a logger instance with specific configurations. This is useful if you need to override default behavior or provide specific mixins.
 
 ```typescript
-import { Logger } from '@your-org/logger';
+import { Logger } from '@repo/logger';
 
 // Get logger with specific settings
 const customLogger = Logger.getLogger({
@@ -75,7 +75,7 @@ To build the package (compile TypeScript to JavaScript):
 
 ```bash
 # From the root of your turborepo
-turbo run build --filter=@your-org/logger
+turbo run build --filter=@repo/logger
 # or from within the package directory
 cd packages/logger
 bun run build

@@ -1,5 +1,5 @@
 {
-  "name": "@your-org/logger",
+  "name": "@repo/logger",
   "version": "0.1.0",
   "private": true,
   "description": "A reusable logger package for the Turborepo project",
@@ -17,8 +17,8 @@
   "devDependencies": {
     "@types/node": "^20",
     "eslint": "^8",
-    "@your-org/eslint-config": "workspace:*",
-    "@your-org/typescript-config": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "typescript": "^5"
   },
   "publishConfig": {
