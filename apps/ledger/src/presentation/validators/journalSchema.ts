@@ -5,7 +5,12 @@ export const journalSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   event: z.string().min(1, { message: "Event is required" }),
   description: z.string(),
-  postingDate: z.date({ message: "Invalid posting date" }),
+  postingDate: z
+    .string()
+    .regex(
+      /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/,
+      "Invalid datetime format. Expected YYYY-MM-DD HH:MM:SS"
+    ),
   amount: z.number().gt(0, { message: "Amount must be greater than 0" }),
   metadata: z.record(z.any()).optional(),
   entries: z.array(entrySchema),

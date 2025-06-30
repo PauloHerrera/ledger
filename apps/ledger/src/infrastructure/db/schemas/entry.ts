@@ -17,7 +17,7 @@ export const entry = pgTable("entries", {
   journalId: uuid("journal_id").references(() => journal.id),
   accountId: uuid("account_id").references(() => account.id),
   description: text("description"),
-  amount: numeric({ precision: 2 }),
+  amount: numeric({ precision: 20, scale: 2 }),
   direction: operationTypeEnum("direction").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

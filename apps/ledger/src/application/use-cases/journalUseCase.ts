@@ -26,7 +26,8 @@ export default class CreateJournalUseCase {
       }
 
       // Create journal
-      const journal = await this.journalRepo.create(this.mapDTOToJournal(data));
+      const journalData = this.mapDTOToJournal(data);
+      const journal = await this.journalRepo.create(journalData);
 
       // Create entries
       const dataEntries = this.mapDTOToEntries(data.entries, journal.id);
@@ -44,7 +45,7 @@ export default class CreateJournalUseCase {
       name: data.name || data.event,
       journalEvent: data.event,
       description: data.description,
-      postingDate: data.postingDate,
+      postingDate: new Date(data.postingDate),
       metadata: data.metadata,
     };
   }

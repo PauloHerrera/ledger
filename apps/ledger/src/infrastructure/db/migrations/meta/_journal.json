@@ -15,6 +15,13 @@
       "when": 1751207475794,
       "tag": "0001_journal",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1751285403026,
+      "tag": "0002_journal2",
+      "breakpoints": true
     }
   ]
 }
