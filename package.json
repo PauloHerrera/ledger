@@ -3,7 +3,8 @@
   "devDependencies": {
     "prettier": "^3.6.0",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "turbo": "^2.5.4"
+    "turbo": "^2.5.4",
+    "pino-pretty": "^10.0.0"
   },
   "engines": {
     "node": ">=18"

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Card } from "@repo/ui/card";
 import { Gradient } from "@repo/ui/gradient";
 import { TurborepoLogo } from "@repo/ui/turborepo-logo";
+import logger from "@your-org/logger"; // Import the logger
 
 const LINKS = [
   {
@@ -28,6 +29,15 @@ const LINKS = [
 ];
 
 export default function Page() {
+  logger.info("Web app Page component rendering started.");
+  logger.debug("Debug: Initializing Page component", { componentName: "Page" });
+
+  if (LINKS.length === 0) {
+    logger.warn("No links configured for the page.");
+  } else {
+    logger.info(`Displaying ${LINKS.length} links.`);
+  }
+
   return (
     <main className="flex flex-col items-center justify-between min-h-screen p-24">
       <div className="z-10 items-center justify-between w-full max-w-5xl font-mono text-sm lg:flex">
