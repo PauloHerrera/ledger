@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
-import type { Database } from "@repo/database-utils";
 import { loan, type Loan, type NewLoan } from "../db/schemas/loan";
 import { borrower } from "../db/schemas/borrower";
-import { BaseRepository, type IBaseRepository } from "@repo/database-utils";
+import { BaseRepository, type IBaseRepository } from "./baseRepository";
+import type { Database } from "../db";
 
 export interface ILoanRepository extends IBaseRepository<Loan, NewLoan> {
   findByIdWithBorrower(id: string): Promise<Loan & { borrower: any }>;
@@ -23,7 +23,7 @@ export class LoanRepository
       .from(loan)
       .leftJoin(borrower, eq(loan.borrowerId, borrower.id))
       .where(eq(loan.id, id));
-    
+
     const row = result[0];
     if (!row) {
       throw new Error("Loan not found");
@@ -41,7 +41,7 @@ export class LoanRepository
       .from(loan)
       .leftJoin(borrower, eq(loan.borrowerId, borrower.id));
 
-    return result.map((row) => ({
+    return result.map((row: any) => ({
       ...row.loans,
       borrower: row.borrowers,
     })) as (Loan & { borrower: any })[];

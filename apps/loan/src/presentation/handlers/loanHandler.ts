@@ -7,8 +7,8 @@ import {
   CreateLoanUseCase,
   GetLoanUseCase,
   GetLoansUseCase,
-  UpdateLoanStatusUseCase,
-} from "../../application/use-cases/loanUseCase";
+  UpdateLoanUseCase,
+} from "../../application/use-cases/loan";
 import type { ApiResponse } from "../types/api";
 
 const loanRepo = new LoanRepository(db);
@@ -49,6 +49,14 @@ export const createLoan = async (req: Request, res: Response) => {
 export const getLoan = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+
+    if (!id) {
+      const response: ApiResponse = {
+        message: "Loan ID is required",
+      };
+      return res.status(400).json(response);
+    }
+
     const useCase = new GetLoanUseCase(loanRepo);
     const loan = await useCase.execute(id);
 
@@ -90,6 +98,14 @@ export const getLoans = async (req: Request, res: Response) => {
 export const updateLoanStatus = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+
+    if (!id) {
+      const response: ApiResponse = {
+        message: "Loan ID is required",
+      };
+      return res.status(400).json(response);
+    }
+
     const validation = updateLoanStatusSchema.safeParse(req.body);
 
     if (!validation.success) {
@@ -102,7 +118,7 @@ export const updateLoanStatus = async (req: Request, res: Response) => {
     }
 
     const statusData = validation.data;
-    const useCase = new UpdateLoanStatusUseCase(loanRepo);
+    const useCase = new UpdateLoanUseCase(loanRepo);
     const loan = await useCase.execute(id, statusData);
 
     const response: ApiResponse = {

@@ -31,7 +31,7 @@ apiRoutes.post("/loan", (req, res) => {
 apiRoutes.get("/loan/:id", (req, res) => {
   getLoan(req, res);
 });
-apiRoutes.get("/loans", (req, res) => {
+apiRoutes.get("/loan", (req, res) => {
   getLoans(req, res);
 });
 apiRoutes.put("/loan/:id/status", (req, res) => {

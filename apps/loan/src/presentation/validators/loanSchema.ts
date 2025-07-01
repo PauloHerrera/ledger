@@ -8,13 +8,15 @@ export const LOAN_STATUSES = [
 ] as const;
 
 export const loanSchema = z.object({
-  amount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-    message: "Amount must be a positive number",
-  }),
-  interestRate: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
-    message: "Interest rate must be a non-negative number",
-  }),
+  amount: z.number().positive({ message: "Amount must be a positive number" }),
+  interestRate: z
+    .number()
+    .min(0, { message: "Interest rate must be a non-negative number" }),
   borrowerId: z.string().uuid({ message: "Invalid borrower id" }),
+  borrowerName: z.string().min(1, { message: "Borrower name is required" }),
+  borrowerDocument: z
+    .string()
+    .min(1, { message: "Borrower document is required" }),
   status: z.enum(LOAN_STATUSES).optional().default("pending"),
 });
 
