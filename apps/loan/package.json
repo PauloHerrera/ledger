@@ -1,0 +1,33 @@
+{
+  "name": "loan",
+  "module": "src/app.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run src/app.ts",
+    "build": "bun build src/app.ts --outfile dist/app.js",
+    "db:generate": "bun drizzle-kit generate",
+    "db:migrate": "bun drizzle-kit migrate",
+    "db:studio": "bun drizzle-kit studio"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/cors": "^2.8.19",
+    "@types/node": "^20",
+    "drizzle-kit": "^0.31.2",
+    "dotenv": "^16.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.50.2",
+    "cors": "^2.8.5",
+    "drizzle-orm": "^0.44.2",
+    "express": "^5.1.0",
+    "postgres": "^3.4.7",
+    "zod": "^3.25.67",
+    "@repo/logger": "workspace:*",
+    "@repo/database-utils": "workspace:*"
+  }
+}
