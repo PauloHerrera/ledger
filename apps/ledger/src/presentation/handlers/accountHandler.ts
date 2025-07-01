@@ -2,8 +2,13 @@ import type { Request, Response } from "express";
 import { accountSchema } from "../validators/accountSchema";
 import { AccountRepository } from "../../infrastructure/repositories/accountRepository";
 import { db } from "../../infrastructure/db";
-import CreateAccountUseCase from "../../application/use-cases/accountUseCase";
+
 import type { ApiResponse } from "../types/api";
+import {
+  CreateAccountUseCase,
+  GetAccountUseCase,
+  GetAccountsUseCase,
+} from "../../application/use-cases/account";
 
 const accountRepo = new AccountRepository(db);
 
@@ -36,15 +41,48 @@ export const createAccount = async (req: Request, res: Response) => {
 };
 
 export const getAccount = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  res.status(200).json({
-    message: "Account fetched successfully",
-  });
+    if (!id) {
+      const response: ApiResponse = {
+        message: "Account ID is required",
+      };
+      return res.status(400).json(response);
+    }
+
+    const useCase = new GetAccountUseCase(accountRepo);
+    const account = await useCase.execute(id);
+
+    const response: ApiResponse = {
+      message: "Account fetched successfully",
+      data: account,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    if (error instanceof Error && error.message === "Account not found") {
+      const response: ApiResponse = {
+        message: "Account not found",
+      };
+      return res.status(404).json(response);
+    }
+    res.status(500).json({ message: `Failed to fetch account: ${error}` });
+  }
 };
 
 export const getAccounts = async (req: Request, res: Response) => {
-  res.status(200).json({
-    message: "Accounts fetched successfully",
-  });
+  try {
+    const useCase = new GetAccountsUseCase(accountRepo);
+    const accounts = await useCase.execute();
+
+    const response: ApiResponse = {
+      message: "Accounts fetched successfully",
+      data: accounts,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: `Failed to fetch accounts: ${error}` });
+  }
 };
