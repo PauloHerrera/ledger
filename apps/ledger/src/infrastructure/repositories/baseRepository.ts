@@ -3,7 +3,7 @@ import type { Database } from "../db";
 
 export interface IBaseRepository<T, NewT extends Record<string, any>> {
   create(data: NewT): Promise<T>;
-  findById(id: string): Promise<T>;
+  findById(id: string): Promise<T | null>;
   findAll(): Promise<T[]>;
 }
 
@@ -20,12 +20,12 @@ export class BaseRepository<T, NewT extends Record<string, any>>
     return result[0] as T;
   }
 
-  async findById(id: string): Promise<T> {
+  async findById(id: string): Promise<T | null> {
     const result = await this.db
       .select()
       .from(this.table)
       .where(eq(this.table.id, id));
-    return result[0] as T;
+    return result[0] ? (result[0] as T) : null;
   }
 
   async findAll(): Promise<T[]> {

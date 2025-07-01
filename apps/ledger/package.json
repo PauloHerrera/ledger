@@ -8,12 +8,17 @@
     "build": "bun build src/app.ts --outfile dist/app.js",
     "db:generate": "bun drizzle-kit generate",
     "db:migrate": "bun drizzle-kit migrate",
-    "db:studio": "bun drizzle-kit studio"
+    "db:studio": "bun drizzle-kit studio",
+    "test": "jest",
+    "test:coverage": "jest --coverage -c ./jest.config.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/cors": "^2.8.19",
-    "drizzle-kit": "^0.31.2"
+    "@types/jest": "^30.0.0",
+    "drizzle-kit": "^0.31.2",
+    "jest": "^30.0.3",
+    "ts-jest": "^29.4.0"
   },
   "peerDependencies": {
     "typescript": "^5"
