@@ -1,6 +1,9 @@
-import { type ILedgerRepository } from "../../infrastructure/repositories/ledgerRepository";
-import type { NewLedger, Ledger } from "../../infrastructure/db/schemas/ledger";
-import type { LedgerDTO } from "../../presentation/validators/ledgerSchema";
+import { type ILedgerRepository } from "../../../infrastructure/repositories/ledgerRepository";
+import type {
+  NewLedger,
+  Ledger,
+} from "../../../infrastructure/db/schemas/ledger";
+import type { LedgerDTO } from "../../../presentation/validators/ledgerSchema";
 
 export default class CreateLedgerUseCase {
   constructor(private ledgerRepository: ILedgerRepository) {}

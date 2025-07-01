@@ -1,5 +1,5 @@
-import type { IAccountRepository } from "../../infrastructure/repositories/accountRepository";
-import type { Account } from "../../infrastructure/db/schemas/account";
+import type { IAccountRepository } from "../../../infrastructure/repositories/accountRepository";
+import type { Account } from "../../../infrastructure/db/schemas/account";
 
 export default class GetAccountsUseCase {
   constructor(private accountRepository: IAccountRepository) {}

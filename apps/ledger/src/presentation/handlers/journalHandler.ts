@@ -1,5 +1,9 @@
 import type { Request, Response } from "express";
-import CreateJournalUseCase, { GetJournalUseCase, GetJournalsUseCase } from "../../application/use-cases/journalUseCase";
+import {
+  CreateJournalUseCase,
+  GetJournalUseCase,
+  GetJournalsUseCase,
+} from "../../application/use-cases/journal";
 import { db } from "../../infrastructure/db";
 import { JournalRepository } from "../../infrastructure/repositories/journalRepository";
 import { EntryRepository } from "../../infrastructure/repositories/entryRepository";

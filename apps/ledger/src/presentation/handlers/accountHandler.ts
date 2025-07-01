@@ -2,8 +2,13 @@ import type { Request, Response } from "express";
 import { accountSchema } from "../validators/accountSchema";
 import { AccountRepository } from "../../infrastructure/repositories/accountRepository";
 import { db } from "../../infrastructure/db";
-import CreateAccountUseCase, { GetAccountUseCase, GetAccountsUseCase } from "../../application/use-cases/accountUseCase";
+
 import type { ApiResponse } from "../types/api";
+import {
+  CreateAccountUseCase,
+  GetAccountUseCase,
+  GetAccountsUseCase,
+} from "../../application/use-cases/account";
 
 const accountRepo = new AccountRepository(db);
 

@@ -1,5 +1,5 @@
-import { type ILedgerRepository } from "../../infrastructure/repositories/ledgerRepository";
-import type { Ledger } from "../../infrastructure/db/schemas/ledger";
+import { type ILedgerRepository } from "../../../infrastructure/repositories/ledgerRepository";
+import type { Ledger } from "../../../infrastructure/db/schemas/ledger";
 
 export default class GetLedgerUseCase {
   constructor(private ledgerRepository: ILedgerRepository) {}
