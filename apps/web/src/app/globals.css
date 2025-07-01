@@ -1,8 +1,5 @@
 @import "tailwindcss";
-@import "@repo/tailwind-config";
-@import "@repo/ui/styles.css";
 
-@layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
@@ -47,13 +44,4 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 94.1%;
   }
-}
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}

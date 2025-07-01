@@ -2,7 +2,7 @@ import { Card } from "@repo/ui/card";
 import { Badge } from "@repo/ui/badge";
 import { Button } from "@repo/ui/button";
 import Link from "next/link";
-import { fetchAccounts } from "./lib/api";
+import { fetchAccounts } from "@/lib/api";
 
 const mockRecentActivity = [
   {
@@ -33,11 +33,16 @@ const mockRecentActivity = [
 
 export default async function DashboardPage() {
   const accounts = await fetchAccounts();
-  
+
   // Calculate dynamic stats from real account data
-  const totalBalance = accounts.reduce((sum, account) => sum + account.balance, 0);
-  const activeAccounts = accounts.filter(account => account.status === "active");
-  const recentAccounts = accounts.filter(account => {
+  const totalBalance = accounts.reduce(
+    (sum, account) => sum + account.balance,
+    0
+  );
+  const activeAccounts = accounts.filter(
+    (account) => account.status === "active"
+  );
+  const recentAccounts = accounts.filter((account) => {
     const accountDate = new Date(account.createdAt);
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -68,7 +73,7 @@ export default async function DashboardPage() {
     },
     {
       title: "Account Types",
-      value: new Set(accounts.map(account => account.type)).size.toString(),
+      value: new Set(accounts.map((account) => account.type)).size.toString(),
       change: "Different types",
       trend: "up" as const,
     },
@@ -78,32 +83,22 @@ export default async function DashboardPage() {
     <div className="container mx-auto">
       <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
         <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Dashboard</h2>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
+            Dashboard
+          </h2>
           <div className="flex items-center space-x-2">
             <Link href="/accounts">
               <Button>View Accounts</Button>
             </Link>
           </div>
         </div>
-        
+
         {/* Stats Cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (
             <Card key={index} className="p-6">
               <div className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <p className="text-sm font-medium">{stat.title}</p>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <path d="M12 2v20m9-9H3" />
-                </svg>
               </div>
               <div className="space-y-1">
                 <p className="text-xl md:text-2xl font-bold">{stat.value}</p>
@@ -124,7 +119,10 @@ export default async function DashboardPage() {
             </div>
             <div className="space-y-4 mt-4">
               {mockRecentActivity.map((activity) => (
-                <div key={activity.id} className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
+                <div
+                  key={activity.id}
+                  className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4"
+                >
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium">{activity.type}</p>
                     <p className="text-sm text-muted-foreground">
@@ -133,8 +131,12 @@ export default async function DashboardPage() {
                   </div>
                   <div className="flex items-center justify-between sm:justify-end space-x-2">
                     <p className="text-sm font-medium">{activity.amount}</p>
-                    <Badge 
-                      variant={activity.status === "completed" ? "default" : "secondary"}
+                    <Badge
+                      variant={
+                        activity.status === "completed"
+                          ? "default"
+                          : "secondary"
+                      }
                     >
                       {activity.status}
                     </Badge>

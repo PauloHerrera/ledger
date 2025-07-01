@@ -1,19 +1,21 @@
-import { Account, AccountsApiResponse } from './types';
+import { Account, AccountsApiResponse } from "./types";
 
-const API_BASE_URL = 'http://localhost:5002';
+const API_BASE_URL = "http://localhost:5002";
 
 export async function fetchAccounts(): Promise<Account[]> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/account`, {
-      cache: 'no-store', // Disable caching for fresh data
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data: AccountsApiResponse = await response.json();
-    
+
     // Handle different API response structures
     if (data.data && Array.isArray(data.data)) {
       return data.data;
@@ -26,7 +28,7 @@ export async function fetchAccounts(): Promise<Account[]> {
     }
   } catch (err) {
     console.error("Failed to fetch accounts:", err);
-    
+
     // Return mock data for development if API fails
     return [
       {
@@ -38,7 +40,7 @@ export async function fetchAccounts(): Promise<Account[]> {
         createdAt: "2024-01-01",
       },
       {
-        id: "2", 
+        id: "2",
         name: "Accounts Receivable",
         type: "Asset",
         balance: 5000,
@@ -50,7 +52,7 @@ export async function fetchAccounts(): Promise<Account[]> {
         name: "Revenue Account",
         type: "Revenue",
         balance: 15000,
-        status: "active", 
+        status: "active",
         createdAt: "2024-01-03",
       },
     ];
