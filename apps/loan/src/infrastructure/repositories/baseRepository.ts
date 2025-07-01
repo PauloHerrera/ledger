@@ -1,0 +1,1 @@
+export { BaseRepository, type IBaseRepository } from "@repo/database-utils";
