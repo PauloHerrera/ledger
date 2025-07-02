@@ -1,5 +1,5 @@
-import type { IJournalRepository } from "../../infrastructure/repositories/journalRepository";
-import type { Journal } from "../../infrastructure/db/schemas/journal";
+import type { IJournalRepository } from "../../../infrastructure/repositories/journalRepository";
+import type { Journal } from "../../../infrastructure/db/schemas/journal";
 
 export default class GetJournalsUseCase {
   constructor(private journalRepository: IJournalRepository) {}

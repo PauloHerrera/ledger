@@ -13,6 +13,22 @@ export default class CreateJournalUseCase {
 
   async execute(data: JournalDTO) {
     try {
+      if (data.entries.length === 0) {
+        throw new Error("No entries provided");
+      }
+
+      if (!data.transactionId) {
+        throw new Error("Transaction id is required");
+      }
+
+      // Validate if the transaction id is already in the database
+      const existingJournal = await this.journalRepo.findById(
+        data.transactionId
+      );
+      if (existingJournal) {
+        throw new Error("Transaction id already exists");
+      }
+
       // Validate entries amount. The sum of debit and credit must be equal to the amount
       const totalDebit = data.entries.reduce((acc: number, entry: EntryDTO) => {
         return acc + (entry.direction === "debit" ? entry.amount : 0);
@@ -39,12 +55,15 @@ export default class CreateJournalUseCase {
 
       return journal;
     } catch (error) {
-      throw new Error("Error creating journal");
+      throw new Error(
+        error instanceof Error ? error.message : "Error creating journal"
+      );
     }
   }
 
   private mapDTOToJournal(data: JournalDTO): NewJournal {
     return {
+      id: data.transactionId,
       name: data.name || data.event,
       journalEvent: data.event,
       description: data.description,
