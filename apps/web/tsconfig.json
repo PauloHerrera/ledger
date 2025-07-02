@@ -5,11 +5,17 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/app/*": ["./src/app/*"],
+      "@/lib/*": ["./src/lib/*"]
+    }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     "next-env.d.ts",
     "next.config.ts",
     ".next/types/**/*.ts"
