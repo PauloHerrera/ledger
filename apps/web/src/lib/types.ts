@@ -12,6 +12,7 @@ export interface Account {
   accountType: string;
   balance: number;
   createdAt: string;
+  ledgerId?: string;
 }
 
 export interface AccountsApiResponse {
@@ -31,6 +32,69 @@ export interface JournalEntryLine {
   account: string;
   debit: number;
   credit: number;
+}
+
+// New types for API integration
+export interface Ledger {
+  id: string;
+  name: string;
+  description?: string;
+  metadata?: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Journal {
+  id: string;
+  code: number;
+  name: string;
+  description?: string;
+  journalEvent: string;
+  metadata?: Record<string, any>;
+  postingDate: string;
+  createdAt: string;
+  updatedAt: string;
+  entries?: Entry[];
+}
+
+export interface Entry {
+  id: string;
+  code: number;
+  journalId: string;
+  accountId: string;
+  description?: string;
+  amount: string;
+  direction: "debit" | "credit";
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ApiResponse<T = any> {
+  data?: T;
+  message?: string;
+  error?: string;
+  total?: number;
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+}
+
+export interface CreateJournalRequest {
+  transactionId: string;
+  name: string;
+  event: string;
+  description: string;
+  postingDate: string;
+  amount: number;
+  metadata?: Record<string, any>;
+  entries: {
+    accountId: string;
+    amount: number;
+    direction: "debit" | "credit";
+    description: string;
+  }[];
 }
 
 export const navigation = [

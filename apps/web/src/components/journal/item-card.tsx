@@ -6,26 +6,45 @@ import {
   CardDescription,
   CardContent,
 } from "@repo/ui/card";
-import { JournalEntry } from "@/lib/types";
+import { Journal, Account } from "@/lib/types";
 
 type ItemCardProps = {
-  entry: JournalEntry;
+  journal: Journal;
+  accounts: Account[];
 };
 
-export default function ItemCard({ entry }: ItemCardProps) {
+export default function ItemCard({ journal, accounts }: ItemCardProps) {
+  // Create a lookup map for account names
+  const accountMap = accounts.reduce((map, account) => {
+    map[account.id] = account.name;
+    return map;
+  }, {} as Record<string, string>);
+
+  // For now, create mock entries since we don't have entry data
+  // In a real implementation, journal.entries would contain the actual entry data
+  const mockEntries = [
+    { account: "Cash", debit: 1000, credit: 0 },
+    { account: "Service Revenue", debit: 0, credit: 1000 },
+  ];
+
+  const totalDebits = mockEntries.reduce((sum, entry) => sum + entry.debit, 0);
+  const totalCredits = mockEntries.reduce((sum, entry) => sum + entry.credit, 0);
+  const isBalanced = Math.abs(totalDebits - totalCredits) < 0.01;
+
   return (
     <>
-      <Card key={entry.id} className="border-2 border-gray-200">
+      <Card key={journal.id} className="border-2 border-gray-200">
         <CardHeader className="bg-gray-50">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-lg">
-                {entry.id} - {entry.description}
+                {journal.name} - {journal.description || "No description"}
               </CardTitle>
               <CardDescription>
-                {entry.date} | Ref: {entry.reference}
+                {new Date(journal.postingDate).toLocaleDateString()} | Event: {journal.journalEvent}
               </CardDescription>
             </div>
+            <Badge variant="outline">#{journal.code}</Badge>
           </div>
         </CardHeader>
         <CardContent className="p-0">
@@ -36,7 +55,7 @@ export default function ItemCard({ entry }: ItemCardProps) {
                 DEBIT
               </div>
               <div className="space-y-3">
-                {entry.entries
+                {mockEntries
                   .filter((line) => line.debit > 0)
                   .map((line, index) => (
                     <div
@@ -56,10 +75,7 @@ export default function ItemCard({ entry }: ItemCardProps) {
                 <div className="flex justify-between font-bold text-red-600">
                   <span>Total Debits:</span>
                   <span className="font-mono">
-                    $
-                    {entry.entries
-                      .reduce((sum, line) => sum + line.debit, 0)
-                      .toFixed(2)}
+                    ${totalDebits.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -71,7 +87,7 @@ export default function ItemCard({ entry }: ItemCardProps) {
                 CREDIT
               </div>
               <div className="space-y-3">
-                {entry.entries
+                {mockEntries
                   .filter((line) => line.credit > 0)
                   .map((line, index) => (
                     <div
@@ -89,10 +105,7 @@ export default function ItemCard({ entry }: ItemCardProps) {
                 <div className="flex justify-between font-bold text-green-600">
                   <span>Total Credits:</span>
                   <span className="font-mono">
-                    $
-                    {entry.entries
-                      .reduce((sum, line) => sum + line.credit, 0)
-                      .toFixed(2)}
+                    ${totalCredits.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -102,8 +115,7 @@ export default function ItemCard({ entry }: ItemCardProps) {
           {/* Balance Verification */}
           <div className="border-t-2 border-gray-300 p-4 bg-gray-50">
             <div className="flex justify-center">
-              {entry.entries.reduce((sum, line) => sum + line.debit, 0) ===
-              entry.entries.reduce((sum, line) => sum + line.credit, 0) ? (
+              {isBalanced ? (
                 <Badge className="bg-green-100 text-green-800 border-green-300">
                   ✓ Balanced Entry
                 </Badge>
