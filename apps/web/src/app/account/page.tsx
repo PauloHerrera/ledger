@@ -2,9 +2,11 @@ import { fetchAccounts } from "@/lib/api";
 import Accounts from "@/components/accounts";
 import { Button } from "@repo/ui/button";
 import { Icons } from "@repo/ui/icons";
+import { Suspense } from "react";
 
 export default async function AccountPage() {
   const accounts = await fetchAccounts();
+
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -23,7 +25,9 @@ export default async function AccountPage() {
           </div>
         </div>
       </div>
-      <Accounts accounts={accounts} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Accounts accounts={accounts} />
+      </Suspense>
     </div>
   );
 }

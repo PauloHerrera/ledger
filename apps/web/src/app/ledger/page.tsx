@@ -1,9 +1,9 @@
-import BeautifulTable from "@/components/beautiful-table";
+import Balance from "@/components/ledger/balance";
 
 export default function LedgerPage() {
   return (
-    <div>
-      <BeautifulTable />
-    </div>
+    <>
+      <Balance />
+    </>
   );
 }

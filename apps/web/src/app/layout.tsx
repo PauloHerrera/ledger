@@ -23,7 +23,9 @@ export default function RootLayout({
             <div className="flex-1">
               <TopNav />
               <div className="container mx-auto p-6 max-w-7xl">
-                <main className="w-full">{children}</main>
+                <main className="w-full">
+                  <div className="min-h-screen bg-gray-50 p-6">{children}</div>
+                </main>
               </div>
             </div>
           </div>

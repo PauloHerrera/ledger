@@ -20,6 +20,12 @@ import {
   BookUser,
   Download,
   Printer,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Plus,
+  Eye,
+  Calculator,
 } from "lucide-react";
 
 export const Icons = {
@@ -44,4 +50,10 @@ export const Icons = {
   BookUser,
   Download,
   Printer,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Plus,
+  Eye,
+  Calculator,
 };

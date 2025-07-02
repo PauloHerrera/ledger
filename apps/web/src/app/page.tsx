@@ -1,7 +1,9 @@
+import Analytics from "@/components/analytics";
+
 export default function Page() {
   return (
-    <div>
-      <h1>Hello World</h1>
-    </div>
+    <>
+      <Analytics />
+    </>
   );
 }

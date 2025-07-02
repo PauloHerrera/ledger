@@ -19,12 +19,26 @@ export interface AccountsApiResponse {
   accounts?: Account[];
 }
 
+export interface JournalEntry {
+  id: string;
+  date: string;
+  description: string;
+  reference: string;
+  entries: JournalEntryLine[];
+}
+
+export interface JournalEntryLine {
+  account: string;
+  debit: number;
+  credit: number;
+}
+
 export const navigation = [
   { name: "Dashboard", href: "/", icon: Icons.Home },
-  { name: "Analytics", href: "/analytics", icon: Icons.BarChart2 },
   { name: "Ledger", href: "/ledger", icon: Icons.BookOpenCheck },
-  { name: "Accounts", href: "/accounts", icon: Icons.BookUser },
-  { name: "Transactions", href: "/transactions", icon: Icons.Wallet },
+  { name: "Accounts", href: "/account", icon: Icons.BookUser },
+  { name: "Journal", href: "/journal", icon: Icons.Wallet },
+  { name: "Analytics", href: "/analytics", icon: Icons.BarChart2 },
   { name: "Organization", href: "/organization", icon: Icons.Building2 },
   { name: "Projects", href: "/projects", icon: Icons.Folder },
   { name: "Invoices", href: "/invoices", icon: Icons.Receipt },

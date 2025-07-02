@@ -1,3 +1,5 @@
+"use server";
+
 import { Account, AccountsApiResponse } from "./types";
 import { env } from "@/lib/env";
 
