@@ -1,21 +1,30 @@
 import type { IJournalRepository } from "../../../infrastructure/repositories/journalRepository";
-import type { Journal } from "../../../infrastructure/db/schemas/journal";
+import type { IEntryRepository } from "../../../infrastructure/repositories/entryRepository";
+import type {
+  Journal,
+  CompleteJournal,
+} from "../../../infrastructure/db/schemas/journal";
 
 export default class GetJournalUseCase {
-  constructor(private journalRepository: IJournalRepository) {}
+  constructor(
+    private journalRepository: IJournalRepository,
+    private entryRepository: IEntryRepository
+  ) {}
 
-  async execute(id: string): Promise<Journal> {
-    try {
-      const journal = await this.journalRepository.findById(id);
-      if (!journal) {
-        throw new Error("Journal not found");
-      }
-      return journal;
-    } catch (error) {
-      if (error instanceof Error && error.message === "Journal not found") {
-        throw error;
-      }
-      throw new Error(`Failed to fetch journal: ${error}`);
+  async execute(id: string): Promise<CompleteJournal> {
+    // Fetch journal first
+    const journal = await this.journalRepository.findById(id);
+
+    if (!journal) {
+      throw new Error("Journal not found");
     }
+
+    // Fetch entries + accounts
+    const entries = await this.entryRepository.findByJournalIdWithAccount(id);
+
+    return {
+      ...(journal as Journal),
+      entries,
+    };
   }
 }

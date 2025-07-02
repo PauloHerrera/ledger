@@ -24,23 +24,11 @@ export class JournalRepository
    * account that is linked to the provided ledgerId.
    */
   async findByLedgerId(ledgerId: string): Promise<Journal[]> {
-    const rows = await this.db
+    const result = await this.db
       .select()
       .from(journal)
-      .innerJoin(entry, eq(entry.journalId, journal.id))
-      .innerJoin(account, eq(entry.accountId, account.id))
-      .where(eq(account.ledgerId, ledgerId));
+      .where(eq(journal.ledgerId, ledgerId));
 
-    // Rows are flat objects containing { journal: {...}, entries: {...}, accounts: {...} }
-    // We only need the unique journal objects.
-    const map = new Map<string, Journal>();
-    rows.forEach((row: any) => {
-      const j: Journal = row.journal as Journal;
-      if (!map.has(j.id)) {
-        map.set(j.id, j);
-      }
-    });
-
-    return Array.from(map.values());
+    return result as Journal[];
   }
 }
