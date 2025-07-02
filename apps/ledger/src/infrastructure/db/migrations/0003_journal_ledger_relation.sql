@@ -1,0 +1,2 @@
+ALTER TABLE "journal" ADD COLUMN "ledger_id" uuid;--> statement-breakpoint
+ALTER TABLE "journal" ADD CONSTRAINT "journal_ledger_id_ledger_id_fk" FOREIGN KEY ("ledger_id") REFERENCES "public"."ledger"("id") ON DELETE no action ON UPDATE no action;

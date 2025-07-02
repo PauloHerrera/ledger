@@ -69,6 +69,7 @@ export default class CreateJournalUseCase {
       description: data.description,
       postingDate: new Date(data.postingDate),
       metadata: data.metadata,
+      ledgerId: data.ledgerId,
     };
   }
 
