@@ -22,6 +22,13 @@
       "when": 1751285403026,
       "tag": "0002_journal2",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1751498731200,
+      "tag": "0003_journal_ledger_relation",
+      "breakpoints": true
     }
   ]
 }

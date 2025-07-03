@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import {
   CreateJournalUseCase,
-  GetJournalUseCase,
   GetJournalsUseCase,
+  GetJournalUseCase,
 } from "../../application/use-cases/journal";
 import { db } from "../../infrastructure/db";
 import { JournalRepository } from "../../infrastructure/repositories/journalRepository";
@@ -60,13 +60,13 @@ export const getJournal = async (req: Request, res: Response) => {
       return res.status(400).json(response);
     }
 
-    const useCase = new GetJournalUseCase(journalRepo);
+    const useCase = new GetJournalUseCase(journalRepo, entryRepo);
     const journal = await useCase.execute(id);
 
     const response: ApiResponse = {
       message: "Journal fetched successfully",
       data: journal,
-      total: 1,
+      total: journal.entries.length,
     };
 
     res.status(200).json(response);
@@ -83,11 +83,16 @@ export const getJournal = async (req: Request, res: Response) => {
 
 export const getJournals = async (req: Request, res: Response) => {
   try {
-    const useCase = new GetJournalsUseCase(journalRepo);
-    const journals = await useCase.execute();
+    const ledgerId = req.query.ledgerId as string | undefined;
+
+    const useCase = new GetJournalsUseCase(journalRepo, entryRepo);
+    const journals = await useCase.execute(ledgerId);
 
     const response: ApiResponse = {
-      message: "Journals fetched successfully",
+      message:
+        journals.length > 0
+          ? "Journals fetched successfully"
+          : "No journals found",
       data: journals,
       total: journals.length,
     };

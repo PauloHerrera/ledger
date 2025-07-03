@@ -3,6 +3,7 @@ import { entrySchema } from "./entrySchema";
 
 export const journalSchema = z.object({
   transactionId: z.string().uuid({ message: "Invalid transaction uuid" }),
+  ledgerId: z.string().uuid({ message: "Invalid ledger uuid" }),
   name: z.string().min(1, { message: "Name is required" }),
   event: z.string().min(1, { message: "Event is required" }),
   description: z.string(),
