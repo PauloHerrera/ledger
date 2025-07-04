@@ -6,29 +6,28 @@ import {
   CardDescription,
   CardContent,
 } from "@repo/ui/card";
-import { Journal, Account } from "@/lib/types";
+import type { Journal } from "@/lib/types";
+import BalanceVerification from "./balance-verification";
+import ItemEntries from "./item-entries";
 
 type ItemCardProps = {
   journal: Journal;
-  accounts: Account[];
 };
 
-export default function ItemCard({ journal, accounts }: ItemCardProps) {
-  // Create a lookup map for account names
-  const accountMap = accounts.reduce((map, account) => {
-    map[account.id] = account.name;
-    return map;
-  }, {} as Record<string, string>);
+export default function ItemCard({ journal }: ItemCardProps) {
+  const { totalDebits, totalCredits } = journal.entries?.reduce(
+    (acc, entry) => {
+      const amount = Number(entry.amount);
+      if (entry.direction === "debit") {
+        acc.totalDebits += amount;
+      } else if (entry.direction === "credit") {
+        acc.totalCredits += amount;
+      }
+      return acc;
+    },
+    { totalDebits: 0, totalCredits: 0 }
+  ) ?? { totalDebits: 0, totalCredits: 0 };
 
-  // For now, create mock entries since we don't have entry data
-  // In a real implementation, journal.entries would contain the actual entry data
-  const mockEntries = [
-    { account: "Cash", debit: 1000, credit: 0 },
-    { account: "Service Revenue", debit: 0, credit: 1000 },
-  ];
-
-  const totalDebits = mockEntries.reduce((sum, entry) => sum + entry.debit, 0);
-  const totalCredits = mockEntries.reduce((sum, entry) => sum + entry.credit, 0);
   const isBalanced = Math.abs(totalDebits - totalCredits) < 0.01;
 
   return (
@@ -41,7 +40,7 @@ export default function ItemCard({ journal, accounts }: ItemCardProps) {
                 {journal.name} - {journal.description || "No description"}
               </CardTitle>
               <CardDescription>
-                {new Date(journal.postingDate).toLocaleDateString()} | Event: {journal.journalEvent}
+                {journal.postingDate} | Event: {journal.journalEvent}
               </CardDescription>
             </div>
             <Badge variant="outline">#{journal.code}</Badge>
@@ -49,81 +48,14 @@ export default function ItemCard({ journal, accounts }: ItemCardProps) {
         </CardHeader>
         <CardContent className="p-0">
           <div className="grid grid-cols-2 min-h-[200px]">
-            {/* Debit Side (Left) */}
-            <div className="border-r-2 border-gray-300 p-4">
-              <div className="text-center font-bold text-lg mb-4 pb-2 border-b-2  text-red-800 border-gray-300">
-                DEBIT
-              </div>
-              <div className="space-y-3">
-                {mockEntries
-                  .filter((line) => line.debit > 0)
-                  .map((line, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center p-2 rounded"
-                    >
-                      <span className="font-medium text-gray-800">
-                        {line.account}
-                      </span>
-                      <span className="font-mono font-bold text-gray-600">
-                        ${line.debit.toFixed(2)}
-                      </span>
-                    </div>
-                  ))}
-              </div>
-              <div className="mt-4 pt-2 border-t border-gray-200">
-                <div className="flex justify-between font-bold text-red-600">
-                  <span>Total Debits:</span>
-                  <span className="font-mono">
-                    ${totalDebits.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Credit Side (Right) */}
-            <div className="p-4">
-              <div className="text-center font-bold text-lg mb-4 pb-2 border-b-2  text-green-800 border-gray-300">
-                CREDIT
-              </div>
-              <div className="space-y-3">
-                {mockEntries
-                  .filter((line) => line.credit > 0)
-                  .map((line, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center p-2  rounded"
-                    >
-                      <span className="font-medium ">{line.account}</span>
-                      <span className="font-mono font-bold ">
-                        ${line.credit.toFixed(2)}
-                      </span>
-                    </div>
-                  ))}
-              </div>
-              <div className="mt-4 pt-2 border-t border-gray-200">
-                <div className="flex justify-between font-bold text-green-600">
-                  <span>Total Credits:</span>
-                  <span className="font-mono">
-                    ${totalCredits.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            </div>
+            <ItemEntries
+              entries={journal.entries ?? []}
+              totalDebits={totalDebits}
+              totalCredits={totalCredits}
+            />
           </div>
 
-          {/* Balance Verification */}
-          <div className="border-t-2 border-gray-300 p-4 bg-gray-50">
-            <div className="flex justify-center">
-              {isBalanced ? (
-                <Badge className="bg-green-100 text-green-800 border-green-300">
-                  ✓ Balanced Entry
-                </Badge>
-              ) : (
-                <Badge variant="destructive">⚠ Unbalanced Entry</Badge>
-              )}
-            </div>
-          </div>
+          <BalanceVerification isBalanced={isBalanced} />
         </CardContent>
       </Card>
     </>

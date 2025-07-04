@@ -28,6 +28,8 @@ import {
   Calculator,
 } from "lucide-react";
 
+import { MdQueuePlayNext as Queue } from "react-icons/md";
+
 export const Icons = {
   Moon,
   Sun,
@@ -56,4 +58,5 @@ export const Icons = {
   Plus,
   Eye,
   Calculator,
+  Queue,
 };

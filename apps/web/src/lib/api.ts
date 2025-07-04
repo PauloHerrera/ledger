@@ -1,6 +1,14 @@
 "use server";
 
-import { Account, AccountsApiResponse, Ledger, Journal, ApiResponse, CreateJournalRequest } from "./types";
+import {
+  Account,
+  AccountsApiResponse,
+  Ledger,
+  Journal,
+  ApiResponse,
+  CreateJournalRequest,
+  AccountBalance,
+} from "./types";
 import { env } from "@/lib/env";
 
 export async function fetchAccounts(): Promise<Account[]> {
@@ -54,6 +62,32 @@ export async function fetchLedgers(): Promise<Ledger[]> {
   }
 }
 
+export async function fetchAccountBalances(
+  ledgerId?: string
+): Promise<AccountBalance[]> {
+  try {
+    const filter = ledgerId ? `?ledgerId=${ledgerId}` : "";
+    const response = await fetch(
+      `${env.ledgerAPI}/api/account-balance${filter}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: ApiResponse<AccountBalance[]> = await response.json();
+    return data.data || [];
+  } catch (err) {
+    console.error("Failed to fetch ledgers:", err);
+    return [];
+  }
+}
+
 export async function fetchJournals(): Promise<Journal[]> {
   try {
     const response = await fetch(`${env.ledgerAPI}/api/journal`, {
@@ -74,31 +108,9 @@ export async function fetchJournals(): Promise<Journal[]> {
   }
 }
 
-export async function fetchJournalsByLedgerId(ledgerId: string): Promise<Journal[]> {
-  try {
-    // Since the API doesn't support filtering by ledgerId directly,
-    // we'll fetch all journals and filter on the client side based on account relationships
-    const [journals, accounts] = await Promise.all([
-      fetchJournals(),
-      fetchAccounts()
-    ]);
-
-    // Get account IDs for this ledger
-    const ledgerAccountIds = accounts
-      .filter(account => account.ledgerId === ledgerId)
-      .map(account => account.id);
-
-    // Filter journals that have entries for these accounts
-    // Note: This is a simplified approach since we don't have entry data here
-    // In a real implementation, you might need additional API calls
-    return journals; // For now, return all journals
-  } catch (err) {
-    console.error("Failed to fetch journals by ledger ID:", err);
-    return [];
-  }
-}
-
-export async function createJournal(journalData: CreateJournalRequest): Promise<Journal | null> {
+export async function createJournal(
+  journalData: CreateJournalRequest
+): Promise<Journal | null> {
   try {
     const response = await fetch(`${env.ledgerAPI}/api/journal`, {
       method: "POST",

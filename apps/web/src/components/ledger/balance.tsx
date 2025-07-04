@@ -17,18 +17,35 @@ import {
   TableCell,
 } from "@repo/ui/table";
 import { Button } from "@repo/ui/button";
-import { Select } from "@repo/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@repo/ui/select";
 import { Icons } from "@repo/ui/icons";
-import { Ledger, Account } from "@/lib/types";
-import { fetchAccounts } from "@/lib/api";
+import { Ledger, AccountBalance } from "@/lib/types";
+import { fetchAccountBalances } from "@/lib/api";
 
 interface BalanceProps {
   ledgers: Ledger[];
 }
 
+type Balance = {
+  totalDebits: number;
+  totalCredits: number;
+  isBalanced: boolean;
+};
+
 export default function Balance({ ledgers }: BalanceProps) {
   const [selectedLedger, setSelectedLedger] = useState<Ledger | null>(null);
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [accounts, setAccounts] = useState<AccountBalance[]>([]);
+  const [balanceResult, setBalanceResult] = useState<Balance>({
+    totalDebits: 0,
+    totalCredits: 0,
+    isBalanced: true,
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -38,58 +55,46 @@ export default function Balance({ ledgers }: BalanceProps) {
   }, [ledgers, selectedLedger]);
 
   useEffect(() => {
-    if (selectedLedger) {
-      loadAccountsForLedger(selectedLedger.id);
-    }
+    if (!selectedLedger) return;
+
+    const loadAccounts = async (ledgerId: string) => {
+      setLoading(true);
+      try {
+        const accountBalances = await fetchAccountBalances(ledgerId);
+
+        setAccounts(accountBalances);
+        calculateBalance(accountBalances);
+      } catch (error) {
+        console.error("Failed to fetch accounts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAccounts(selectedLedger.id);
   }, [selectedLedger]);
 
-  const loadAccountsForLedger = async (ledgerId: string) => {
-    setLoading(true);
-    try {
-      const allAccounts = await fetchAccounts();
-      const ledgerAccounts = allAccounts.filter(
-        (account) => account.ledgerId === ledgerId
-      );
-      setAccounts(ledgerAccounts);
-    } catch (error) {
-      console.error("Failed to fetch accounts:", error);
-    } finally {
-      setLoading(false);
-    }
+  const calculateBalance = (accounts: AccountBalance[]) => {
+    const totalDebits = accounts.reduce(
+      (acc, account) => acc + Number(account.totalAmountDebits),
+      0
+    );
+    const totalCredits = accounts.reduce(
+      (acc, account) => acc + Number(account.totalAmountCredits),
+      0
+    );
+
+    const isBalanced = Math.abs(totalDebits - totalCredits) < 0.01;
+
+    setBalanceResult({ totalDebits, totalCredits, isBalanced });
   };
-
-  const calculateTotals = () => {
-    let totalDebits = 0;
-    let totalCredits = 0;
-
-    accounts.forEach((account) => {
-      if (account.accountType === "asset" || account.accountType === "expense") {
-        if (account.balance > 0) {
-          totalDebits += account.balance;
-        }
-      } else if (
-        account.accountType === "liability" ||
-        account.accountType === "equity" ||
-        account.accountType === "revenue"
-      ) {
-        if (account.balance > 0) {
-          totalCredits += account.balance;
-        }
-      }
-    });
-
-    return { totalDebits, totalCredits };
-  };
-
-  const { totalDebits, totalCredits } = calculateTotals();
-  const isBalanced = Math.abs(totalDebits - totalCredits) < 0.01;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            {selectedLedger ? selectedLedger.name : "Ledger"} Balance Sheet
+            Ledger Balance Sheet
           </h1>
           <p className="text-gray-600">Double Entry Bookkeeping System</p>
         </div>
@@ -105,33 +110,32 @@ export default function Balance({ ledgers }: BalanceProps) {
       <Card>
         <CardHeader>
           <CardTitle>Select Ledger</CardTitle>
-          <CardDescription>Choose a ledger to view its trial balance</CardDescription>
+          <CardDescription>
+            Choose a ledger to view its trial balance
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {ledgers.map((ledger) => (
-              <Card
-                key={ledger.id}
-                className={`cursor-pointer transition-all ${
-                  selectedLedger?.id === ledger.id
-                    ? "ring-2 ring-blue-500 bg-blue-50"
-                    : "hover:bg-gray-50"
-                }`}
-                onClick={() => setSelectedLedger(ledger)}
-              >
-                <CardContent className="p-4">
-                  <div className="font-medium">{ledger.name}</div>
-                  {ledger.description && (
-                    <div className="text-sm text-gray-600 mt-1">
-                      {ledger.description}
-                    </div>
-                  )}
-                  <div className="text-xs text-gray-500 mt-2">
-                    Created: {new Date(ledger.createdAt).toLocaleDateString()}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="max-w-md">
+            <Select
+              value={selectedLedger?.id || ""}
+              onValueChange={(value) => {
+                const ledger = ledgers.find((l) => l.id === value);
+                if (ledger) {
+                  setSelectedLedger(ledger);
+                }
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a ledger" />
+              </SelectTrigger>
+              <SelectContent>
+                {ledgers.map((ledger) => (
+                  <SelectItem key={ledger.id} value={ledger.id}>
+                    <div className="font-medium">{ledger.name}</div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
@@ -141,7 +145,7 @@ export default function Balance({ ledgers }: BalanceProps) {
         <Card>
           <CardHeader>
             <CardTitle>Trial Balance - {selectedLedger.name}</CardTitle>
-            <CardDescription>Verify that debits equal credits</CardDescription>
+            <CardDescription>{selectedLedger.description}</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -165,26 +169,21 @@ export default function Balance({ ledgers }: BalanceProps) {
                   </TableHeader>
                   <TableBody>
                     {accounts.map((account) => (
-                      <TableRow key={account.id}>
+                      <TableRow key={account.accountId}>
                         <TableCell className="font-medium">
-                          {account.name}
+                          {account.accountName}
                         </TableCell>
                         <TableCell className="capitalize">
                           {account.accountType}
                         </TableCell>
                         <TableCell className="text-right">
-                          {(account.accountType === "asset" ||
-                            account.accountType === "expense") &&
-                          account.balance > 0
-                            ? `$${account.balance.toLocaleString()}`
+                          {Number(account.totalAmountDebits) > 0
+                            ? `$${Number(account.totalAmountDebits).toFixed(2)}`
                             : "-"}
                         </TableCell>
                         <TableCell className="text-right">
-                          {(account.accountType === "liability" ||
-                            account.accountType === "equity" ||
-                            account.accountType === "revenue") &&
-                          account.balance > 0
-                            ? `$${account.balance.toLocaleString()}`
+                          {Number(account.totalAmountCredits) > 0
+                            ? `$${Number(account.totalAmountCredits).toFixed(2)}`
                             : "-"}
                         </TableCell>
                       </TableRow>
@@ -192,33 +191,39 @@ export default function Balance({ ledgers }: BalanceProps) {
                     <TableRow className="border-t-2 font-bold">
                       <TableCell colSpan={2}>TOTALS</TableCell>
                       <TableCell className="text-right">
-                        ${totalDebits.toLocaleString()}
+                        ${balanceResult.totalDebits.toFixed(2)}
                       </TableCell>
                       <TableCell className="text-right">
-                        ${totalCredits.toLocaleString()}
+                        ${balanceResult.totalCredits.toFixed(2)}
                       </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
                 <div
                   className={`mt-4 p-4 rounded-lg ${
-                    isBalanced ? "bg-green-50" : "bg-red-50"
+                    balanceResult.isBalanced ? "bg-green-50" : "bg-red-50"
                   }`}
                 >
                   <p
                     className={`font-medium ${
-                      isBalanced ? "text-green-800" : "text-red-800"
+                      balanceResult.isBalanced
+                        ? "text-green-800"
+                        : "text-red-800"
                     }`}
                   >
-                    {isBalanced ? "✓" : "⚠"} Trial Balance{" "}
-                    {isBalanced ? "is in balance" : "is NOT in balance"}
+                    {balanceResult.isBalanced ? "✓" : "⚠"} Trial Balance{" "}
+                    {balanceResult.isBalanced
+                      ? "is in balance"
+                      : "is NOT in balance"}
                   </p>
                   <p
                     className={`text-sm ${
-                      isBalanced ? "text-green-600" : "text-red-600"
+                      balanceResult.isBalanced
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
-                    {isBalanced
+                    {balanceResult.isBalanced
                       ? "Total debits equal total credits"
                       : "Total debits do not equal total credits"}
                   </p>
