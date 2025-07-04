@@ -3,7 +3,7 @@ import {
   CreateJournalUseCase,
   GetJournalsUseCase,
   GetJournalUseCase,
-} from "../../application/use-cases/journal";
+} from "../../application/useCases/journal";
 import { db } from "../../infrastructure/db";
 import { JournalRepository } from "../../infrastructure/repositories/journalRepository";
 import { EntryRepository } from "../../infrastructure/repositories/entryRepository";

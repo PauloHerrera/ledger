@@ -1,0 +1,30 @@
+{
+    "eventId": "550e8400-e29b-41d4-a716-446655440001",
+    "eventType": "loan.provision.created",
+    "eventVersion": "1.0",
+    "timestamp": "2025-07-04T14:30:00.000Z",
+    "source": "risk-management-service",
+    "correlationId": "provision-cycle-Q2-2025",
+    "metadata": {
+      "userId": "system-risk-analyst",
+      "tenantId": "credit-company-456",
+      "environment": "production",
+      "region": "us-east-1"
+    },
+    "data": {
+      "loanId": "loan-123789",
+      "borrowerId": "user-12345",
+      "provisionId": "prov-789456",
+      "provisionType": "specific_provision",
+      "provisionAmount": 2500.00,
+      "provisionRate": 0.15,
+      "outstandingBalance": 16666.67,
+      "daysDelinquent": 90,
+      "provisionReason": "90_days_past_due",
+      "riskRating": "substandard",
+      "collateralValue": 5000.00,
+      "expectedLossRate": 0.35,
+      "accountingPeriod": "2025-Q2",
+      "regulatoryClassification": "doubtful"
+    }
+  }

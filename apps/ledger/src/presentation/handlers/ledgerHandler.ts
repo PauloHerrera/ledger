@@ -3,7 +3,7 @@ import { LedgerRepository } from "../../infrastructure/repositories/ledgerReposi
 import CreateLedgerUseCase, {
   GetLedgerUseCase,
   GetLedgersUseCase,
-} from "../../application/use-cases/ledger";
+} from "../../application/useCases/ledger";
 import { ledgerSchema } from "../validators/ledgerSchema";
 import { db } from "../../infrastructure/db";
 import type { ApiResponse } from "../types/api";

@@ -1,0 +1,30 @@
+{
+    "transactionId": "550e8400-e29b-41d4-a716-446655440007",
+    "event": "loan.funds.disbursed",
+    "version": "1.0",
+    "timestamp": "2025-07-05T09:15:00.000Z",
+    "source": "disbursement-service",
+    "correlationId": "loan-process-789",
+    "causationId": "550e8400-e29b-41d4-a716-446655440006",
+    "metadata": {
+      "userId": "user-12345",
+      "tenantId": "credit-company-456",
+      "environment": "production",
+      "region": "us-east-1"
+    },
+    "data": {
+      "loanId": "loan-123789",
+      "borrowerId": "user-12345",
+      "disbursementAmount": 12000.00,
+      "disbursementMethod": "TED",
+      "recipientAccount": {
+        "accountNumber": "***-***-1234",
+        "routingNumber": "021000021",
+        "accountType": "checking"
+      },
+      "transactionId": "txn-disbursement-456789",
+      "expectedArrival": "2025-07-05T17:00:00.000Z",
+      "processingFee": 50.00,
+      "netAmount": 11950.00
+    }
+  }

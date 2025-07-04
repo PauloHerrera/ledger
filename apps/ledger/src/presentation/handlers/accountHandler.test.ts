@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { createAccount } from "./accountHandler";
 import type { Account } from "../../infrastructure/db/schemas/account";
-import * as accountUseCaseModule from "../../application/use-cases/accountUseCase";
+import * as accountUseCaseModule from "../../application/useCases/accountUseCase";
 
 describe("Account Handler", () => {
   let mockRequest: Partial<Request>;

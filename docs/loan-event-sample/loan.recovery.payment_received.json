@@ -1,0 +1,35 @@
+{
+    "eventId": "550e8400-e29b-41d4-a716-446655440004",
+    "eventType": "loan.recovery.payment_received",
+    "eventVersion": "1.0",
+    "timestamp": "2025-09-20T14:22:00.000Z",
+    "source": "recovery-service",
+    "correlationId": "recovery-process-456",
+    "causationId": "550e8400-e29b-41d4-a716-446655440003",
+    "metadata": {
+      "userId": "system-recovery",
+      "tenantId": "credit-company-456",
+      "environment": "production",
+      "region": "us-east-1"
+    },
+    "data": {
+      "loanId": "loan-123789",
+      "borrowerId": "user-12345",
+      "recoveryAssignmentId": "recovery-789123",
+      "recoveryPaymentId": "rec-pay-456789",
+      "thirdPartyAgencyId": "agency-001",
+      "grossRecoveryAmount": 5000.00,
+      "agencyCommission": 1250.00,
+      "netRecoveryAmount": 3750.00,
+      "paymentMethod": "wire_transfer",
+      "recoveryDate": "2025-09-20T14:22:00.000Z",
+      "settlementType": "partial_settlement",
+      "settlementPercentage": 0.32,
+      "remainingBalance": 10833.45,
+      "accountingImpact": {
+        "recoveryIncome": 3750.00,
+        "commissionExpense": 1250.00,
+        "provisionReversal": 2500.00
+      }
+    }
+  }

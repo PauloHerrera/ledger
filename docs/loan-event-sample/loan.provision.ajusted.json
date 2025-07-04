@@ -1,0 +1,33 @@
+{
+  "eventId": "550e8400-e29b-41d4-a716-446655440002",
+  "eventType": "loan.provision.adjusted",
+  "eventVersion": "1.0",
+  "timestamp": "2025-07-31T23:59:00.000Z",
+  "source": "risk-management-service",
+  "correlationId": "provision-cycle-Q2-2025",
+  "causationId": "550e8400-e29b-41d4-a716-446655440001",
+  "metadata": {
+    "userId": "system-risk-analyst",
+    "tenantId": "credit-company-456",
+    "environment": "production",
+    "region": "us-east-1"
+  },
+  "data": {
+    "loanId": "loan-123789",
+    "borrowerId": "user-12345",
+    "provisionId": "prov-789456",
+    "adjustmentType": "increase",
+    "previousProvisionAmount": 2500.00,
+    "newProvisionAmount": 4200.00,
+    "adjustmentAmount": 1700.00,
+    "adjustmentReason": "deterioration_in_collateral_value",
+    "updatedCollateralValue": 2800.00,
+    "updatedRiskRating": "loss",
+    "daysDelinquent": 120,
+    "accountingImpact": {
+      "debitAccount": "provision_expense",
+      "creditAccount": "allowance_for_loan_losses",
+      "amount": 1700.00
+    }
+  }
+}

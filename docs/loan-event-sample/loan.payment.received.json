@@ -1,0 +1,33 @@
+{
+    "transactionId": "550e8400-e29b-41d4-a716-446655440008",
+    "event": "loan.payment.received",
+    "version": "1.0",
+    "timestamp": "2025-08-05T10:30:00.000Z",
+    "source": "loan-servicing-service",
+    "correlationId": "payment-process-456",
+    "metadata": {
+      "userId": "user-12345",
+      "tenantId": "credit-company-456",
+      "environment": "production",
+      "region": "us-east-1"
+    },
+    "data": {
+      "loanId": "loan-123789",
+      "invoiceId": "inv-789123",
+      "invoiceNumber": "3",
+      "borrowerId": "user-12345",
+      "paymentId": "pay-789123",
+      "paymentAmount": 382.26,
+      "paymentMethod": "ach_debit",
+      "paymentDate": "2025-08-05T10:30:00.000Z",
+      "dueDate": "2025-08-05T00:00:00.000Z",
+      "paymentStatus": "on_time",
+      "allocation": {
+        "principal": 251.89,
+        "interest": 130.37,
+        "fees": 0.00
+      },
+      "remainingBalance": 11748.11,
+      "nextDueDate": "2025-09-05T00:00:00.000Z"
+    }
+  }

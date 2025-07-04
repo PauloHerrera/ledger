@@ -1,0 +1,34 @@
+{
+    "eventId": "550e8400-e29b-41d4-a716-446655440007",
+    "eventType": "loan.anticipation.payment_received",
+    "eventVersion": "1.0",
+    "timestamp": "2025-07-04T16:45:00.000Z",
+    "source": "loan-servicing-service",
+    "correlationId": "anticipation-process-789",
+    "causationId": "550e8400-e29b-41d4-a716-446655440006",
+    "metadata": {
+      "userId": "user-12345",
+      "tenantId": "credit-company-456",
+      "environment": "production",
+      "region": "us-east-1"
+    },
+    "data": {
+      "loanId": "loan-123789",
+      "borrowerId": "user-12345",
+      "anticipationRequestId": "antc-req-456789",
+      "anticipationPaymentId": "antc-pay-789456",
+      "paymentAmount": 736.37,
+      "paymentMethod": "pix_transfer",
+      "paymentDate": "2025-07-04T16:45:00.000Z",
+      "installmentsClosed": [35, 36],
+      "newLoanBalance": 0.00,
+      "loanStatus": "settled",
+      "finalPaymentBreakdown": {
+        "principalPaid": 729.04,
+        "interestPaid": 4.33,
+        "discountApplied": 28.15,
+        "totalInterestSaved": 32.48,
+        "feesPaid": 3.00
+      }
+    }
+  }
