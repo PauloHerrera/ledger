@@ -4,6 +4,7 @@ import {
   createAccount,
   getAccounts,
 } from "../handlers/accountHandler";
+import { getAccountBalances } from "../handlers/accountBalanceHandler";
 import { createLedger, getLedger, getLedgers } from "../handlers/ledgerHandler";
 import {
   createJournal,
@@ -44,6 +45,11 @@ apiRoutes.get("/journal/:id", (req, res) => {
 });
 apiRoutes.get("/journal", (req, res) => {
   getJournals(req, res);
+});
+
+// Account Balance Routes
+apiRoutes.get("/account-balance", (req, res) => {
+  getAccountBalances(req, res);
 });
 
 export default apiRoutes;
