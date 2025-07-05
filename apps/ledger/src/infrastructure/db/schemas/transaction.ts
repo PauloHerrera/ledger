@@ -2,6 +2,7 @@ import { pgTable, uuid, text, timestamp, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { ledger } from "./ledger";
 import { transactionEntries, type TransactionEntry } from "./transactionEntry";
+import { transactionStatusEnum } from "./enums";
 
 export const transaction = pgTable(
   "transactions",
@@ -10,6 +11,7 @@ export const transaction = pgTable(
     eventType: text("event_type").notNull(),
     description: text("description"),
     ledgerId: uuid("ledger_id").references(() => ledger.id),
+    status: transactionStatusEnum("status").default("active"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
   },

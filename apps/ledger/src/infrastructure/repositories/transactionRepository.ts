@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { Database } from "../db";
 import {
   transaction,
@@ -25,7 +25,10 @@ export class TransactionRepository
     eventType: string
   ): Promise<CompleteTransaction | null> {
     const result = await this.db.query.transaction.findFirst({
-      where: eq(transaction.eventType, eventType),
+      where: and(
+        eq(transaction.eventType, eventType),
+        eq(transaction.status, "active")
+      ),
       with: {
         entries: true,
       },

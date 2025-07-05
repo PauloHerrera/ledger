@@ -1,3 +1,4 @@
+import logger from "@repo/logger";
 import { type NewEntry } from "../../../infrastructure/db/schemas/entry";
 import { mapDTOToJournal } from "../../../infrastructure/db/schemas/journal";
 import type { IEntryRepository } from "../../../infrastructure/repositories/entryRepository";
@@ -16,6 +17,10 @@ export default class ProcessLoanEvent {
     // Find transaction for the event
     const transaction = await this.transactionRepository.findByEventType(
       eventData.event
+    );
+
+    logger.info(
+      `[Loan Event Processing] Transactions Available: ${JSON.stringify(transaction)}`
     );
 
     if (!transaction) {
@@ -52,7 +57,17 @@ export default class ProcessLoanEvent {
       entriesData.push(entry);
     }
 
+    logger.info(
+      `[Loan Event Processing] Entries to be created: ${JSON.stringify(entriesData)}`
+    );
+
     await this.entryRepository.createBatch(entriesData);
+
+    logger.info(
+      `[Loan Event Processing] Created Journal: ${journal.id} Entries: ${JSON.stringify(
+        entriesData.map((entry) => entry.id)
+      )}`
+    );
   }
 
   private getAmount(amountField: string, data: Record<string, string>): string {

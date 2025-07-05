@@ -22,9 +22,6 @@
         "routingNumber": "021000021",
         "accountType": "checking"
       },
-      "transactionId": "txn-disbursement-456789",
-      "expectedArrival": "2025-07-05T17:00:00.000Z",
-      "processingFee": 50.00,
-      "netAmount": 11950.00
+      "expectedArrival": "2025-07-05T17:00:00.000Z"
     }
   }

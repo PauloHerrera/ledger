@@ -25,6 +25,10 @@ export const transactionEntryRelations = relations(
       fields: [transactionEntries.accountId],
       references: [account.id],
     }),
+    transaction: one(transaction, {
+      fields: [transactionEntries.transactionId],
+      references: [transaction.id],
+    }),
   })
 );
 
