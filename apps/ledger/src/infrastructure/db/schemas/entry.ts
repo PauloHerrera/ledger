@@ -10,6 +10,7 @@ import { relations } from "drizzle-orm";
 import { journal } from "./journal";
 import { account } from "./account";
 import { operationTypeEnum } from "./enums";
+import type { EntryDTO } from "../../../presentation/validators/entrySchema";
 
 export const entry = pgTable("entries", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -39,3 +40,14 @@ export const accountRelations = relations(entry, ({ one }) => ({
 
 export type Entry = typeof entry.$inferSelect;
 export type NewEntry = typeof entry.$inferInsert;
+
+export const mapDTOToEntries = (
+  data: EntryDTO[],
+  journalId: string
+): NewEntry[] => {
+  return data.map((entry) => ({
+    ...entry,
+    journalId,
+    amount: entry.amount.toString(),
+  }));
+};

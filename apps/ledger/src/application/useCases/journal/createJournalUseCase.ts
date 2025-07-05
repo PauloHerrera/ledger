@@ -1,7 +1,7 @@
 import type { IJournalRepository } from "../../../infrastructure/repositories/journalRepository";
 import type { IEntryRepository } from "../../../infrastructure/repositories/entryRepository";
-import type { NewJournal } from "../../../infrastructure/db/schemas/journal";
-import type { NewEntry } from "../../../infrastructure/db/schemas/entry";
+import { mapDTOToJournal } from "../../../infrastructure/db/schemas/journal";
+import { mapDTOToEntries } from "../../../infrastructure/db/schemas/entry";
 import type { EntryDTO } from "../../../presentation/validators/entrySchema";
 import type { JournalDTO } from "../../../presentation/validators/journalSchema";
 
@@ -45,11 +45,11 @@ export default class CreateJournalUseCase {
       }
 
       // Create journal
-      const journalData = this.mapDTOToJournal(data);
+      const journalData = mapDTOToJournal(data);
       const journal = await this.journalRepo.create(journalData);
 
       // Create entries
-      const dataEntries = this.mapDTOToEntries(data.entries, journal.id);
+      const dataEntries = mapDTOToEntries(data.entries, journal.id);
 
       await this.entryRepo.createBatch(dataEntries);
 
@@ -59,25 +59,5 @@ export default class CreateJournalUseCase {
         error instanceof Error ? error.message : "Error creating journal"
       );
     }
-  }
-
-  private mapDTOToJournal(data: JournalDTO): NewJournal {
-    return {
-      id: data.transactionId,
-      name: data.name || data.event,
-      journalEvent: data.event,
-      description: data.description,
-      postingDate: new Date(data.postingDate),
-      metadata: data.metadata,
-      ledgerId: data.ledgerId,
-    };
-  }
-
-  private mapDTOToEntries(data: EntryDTO[], journalId: string): NewEntry[] {
-    return data.map((entry) => ({
-      ...entry,
-      journalId,
-      amount: entry.amount.toString(),
-    }));
   }
 }

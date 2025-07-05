@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { GetAccountBalancesUseCase } from "../../application/use-cases/account";
+import { GetAccountBalancesUseCase } from "../../application/useCases/account";
 import { EntryRepository } from "../../infrastructure/repositories/entryRepository";
 import type { ApiResponse } from "../types/api";
 import { db } from "../../infrastructure/db";

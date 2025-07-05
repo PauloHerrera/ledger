@@ -1,0 +1,40 @@
+{
+    "eventId": "550e8400-e29b-41d4-a716-446655440009",
+    "eventType": "loan.discount.payment_received",
+    "eventVersion": "1.0",
+    "timestamp": "2025-07-15T14:22:00.000Z",
+    "source": "loan-servicing-service",
+    "correlationId": "discount-campaign-456",
+    "causationId": "550e8400-e29b-41d4-a716-446655440008",
+    "metadata": {
+      "userId": "user-67890",
+      "tenantId": "credit-company-456",
+      "environment": "production",
+      "region": "us-east-1"
+    },
+    "data": {
+      "loanId": "loan-987654",
+      "invoiceId": "inv-789123",
+      "invoiceNumber": "3",
+      "borrowerId": "user-67890",
+      "discountOfferId": "disc-offer-123456",
+      "discountPaymentId": "disc-pay-789123",
+      "paymentAmount": 6800.00,
+      "paymentMethod": "bank_transfer",
+      "paymentDate": "2025-07-15T14:22:00.000Z",
+      "originalBalance": 8500.00,
+      "discountApplied": 1700.00,
+      "accountStatus": "settled",
+      "accountingImpact": {
+        "principalReduction": 6800.00,
+        "badDebtExpense": 1700.00,
+        "provisionReversal": 2550.00,
+        "interestReduction": 1700.00,
+        "feesReduction": 0.00
+      },
+      "taxImplications": {
+        "forgivenDebtAmount": 1700.00,
+        "form1099CRequired": true
+      }
+    }
+  }

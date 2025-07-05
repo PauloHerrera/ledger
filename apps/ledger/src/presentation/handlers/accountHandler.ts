@@ -8,7 +8,7 @@ import {
   CreateAccountUseCase,
   GetAccountUseCase,
   GetAccountsUseCase,
-} from "../../application/use-cases/account";
+} from "../../application/useCases/account";
 
 const accountRepo = new AccountRepository(db);
 
