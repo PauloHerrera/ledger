@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import type { Database } from "../types/database";
+import type { IDB } from "../types/database";
 
 export interface IBaseRepository<T, NewT extends Record<string, any>> {
   create(data: NewT): Promise<T>;
@@ -11,7 +11,7 @@ export class BaseRepository<T, NewT extends Record<string, any>>
   implements IBaseRepository<T, NewT>
 {
   constructor(
-    protected db: Database,
+    protected db: IDB,
     protected table: any // drizzle table schema
   ) {}
 
