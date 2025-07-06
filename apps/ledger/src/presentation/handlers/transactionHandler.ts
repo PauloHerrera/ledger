@@ -5,11 +5,13 @@ import type { ApiResponse } from "../types/api";
 import { transactionSchema } from "../validators/transactionSchema";
 import CreateTransactionUseCase from "../../application/useCases/transaction/createTransactionUseCase";
 import { TransactionEntryRepository } from "../../infrastructure/repositories/transactionEntryRepository";
+import { AccountRepository } from "../../infrastructure/repositories/accountRepository";
 import GetTransactionsUseCase from "../../application/useCases/transaction/getTransactionsUseCase";
 import GetTransactionUseCase from "../../application/useCases/transaction/getTransactionUseCase";
 
 const transactionRepository = new TransactionRepository(db);
 const transactionEntryRepository = new TransactionEntryRepository(db);
+const accountRepository = new AccountRepository(db);
 
 export const createTransaction = async (req: Request, res: Response) => {
   try {
@@ -25,7 +27,8 @@ export const createTransaction = async (req: Request, res: Response) => {
 
     const createTransactionUseCase = new CreateTransactionUseCase(
       transactionRepository,
-      transactionEntryRepository
+      transactionEntryRepository,
+      accountRepository
     );
 
     const transaction = await createTransactionUseCase.execute(validation.data);
