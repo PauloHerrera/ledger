@@ -32,8 +32,8 @@ export default function ItemCard({ journal }: ItemCardProps) {
 
   return (
     <>
-      <Card key={journal.id} className="border-2 border-gray-200">
-        <CardHeader className="bg-gray-50">
+          <Card key={journal.id} className="border-2 border-gray-200 dark:border-gray-700">
+      <CardHeader className="bg-gray-50 dark:bg-gray-900">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-lg">

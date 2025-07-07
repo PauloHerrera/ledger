@@ -93,7 +93,7 @@ export default function Balance({ ledgers }: BalanceProps) {
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">
             Ledger Balance Sheet
           </h1>
           <p className="text-gray-600">Double Entry Bookkeeping System</p>

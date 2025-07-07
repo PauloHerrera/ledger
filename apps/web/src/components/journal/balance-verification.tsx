@@ -8,7 +8,7 @@ export default function BalanceVerification({
   isBalanced,
 }: BalanceVerificationProps) {
   return (
-    <div className="border-t-2 border-gray-300 p-4 bg-gray-50">
+    <div className="border-t-2 border-gray-300 dark:border-gray-600 p-4 bg-gray-50 dark:bg-gray-900">
       <div className="flex justify-center">
         {isBalanced ? (
           <Badge className="bg-green-100 text-green-800 border-green-300">

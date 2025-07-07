@@ -24,7 +24,7 @@ export default function RootLayout({
               <TopNav />
               <div className="container mx-auto p-6 max-w-7xl">
                 <main className="w-full">
-                  <div className="min-h-screen bg-gray-50 p-6">{children}</div>
+                  <div className="min-h-screen bg-gray-50 dark:bg-gray-950 p-6">{children}</div>
                 </main>
               </div>
             </div>

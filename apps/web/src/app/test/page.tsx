@@ -157,7 +157,7 @@ export default function TestPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+          <div className="min-h-screen bg-gray-50 dark:bg-gray-950 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -470,8 +470,8 @@ export default function TestPage() {
               <CardContent>
                 <div className="space-y-6">
                   {journalEntries.map((entry) => (
-                    <Card key={entry.id} className="border-2 border-gray-200">
-                      <CardHeader className="bg-gray-50">
+                    <Card key={entry.id} className="border-2 border-gray-200 dark:border-gray-700">
+                      <CardHeader className="bg-gray-50 dark:bg-gray-900">
                         <div className="flex items-center justify-between">
                           <div>
                             <CardTitle className="text-lg">
@@ -486,8 +486,8 @@ export default function TestPage() {
                       <CardContent className="p-0">
                         <div className="grid grid-cols-2 min-h-[200px]">
                           {/* Debit Side (Left) */}
-                          <div className="border-r-2 border-gray-300 p-4">
-                            <div className="text-center font-bold text-lg mb-4 pb-2 border-b-2 border-gray-300">
+                          <div className="border-r-2 border-gray-300 dark:border-gray-600 p-4">
+                            <div className="text-center font-bold text-lg mb-4 pb-2 border-b-2 border-gray-300 dark:border-gray-600">
                               DEBIT
                             </div>
                             <div className="space-y-3">
@@ -507,7 +507,7 @@ export default function TestPage() {
                                   </div>
                                 ))}
                             </div>
-                            <div className="mt-4 pt-2 border-t border-gray-200">
+                            <div className="mt-4 pt-2 border-t border-gray-200 dark:border-gray-700">
                               <div className="flex justify-between font-bold text-red-600">
                                 <span>Total Debits:</span>
                                 <span className="font-mono">
@@ -522,7 +522,7 @@ export default function TestPage() {
 
                           {/* Credit Side (Right) */}
                           <div className="p-4">
-                            <div className="text-center font-bold text-lg mb-4 pb-2 border-b-2 border-gray-300">
+                            <div className="text-center font-bold text-lg mb-4 pb-2 border-b-2 border-gray-300 dark:border-gray-600">
                               CREDIT
                             </div>
                             <div className="space-y-3">
@@ -542,7 +542,7 @@ export default function TestPage() {
                                   </div>
                                 ))}
                             </div>
-                            <div className="mt-4 pt-2 border-t border-gray-200">
+                            <div className="mt-4 pt-2 border-t border-gray-200 dark:border-gray-700">
                               <div className="flex justify-between font-bold text-green-600">
                                 <span>Total Credits:</span>
                                 <span className="font-mono">
@@ -557,7 +557,7 @@ export default function TestPage() {
                         </div>
 
                         {/* Balance Verification */}
-                        <div className="border-t-2 border-gray-300 p-4 bg-gray-50">
+                        <div className="border-t-2 border-gray-300 dark:border-gray-600 p-4 bg-gray-50 dark:bg-gray-900">
                           <div className="flex justify-center">
                             {entry.entries.reduce(
                               (sum, line) => sum + line.debit,
