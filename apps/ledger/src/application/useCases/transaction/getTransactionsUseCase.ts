@@ -10,7 +10,7 @@ export default class GetTransactionsUseCase {
         await this.transactionRepository.findByEventType(event);
 
       if (!transactions) {
-        throw new Error("Transactions not found");
+        throw new Error("Transaction not found");
       }
 
       return transactions;

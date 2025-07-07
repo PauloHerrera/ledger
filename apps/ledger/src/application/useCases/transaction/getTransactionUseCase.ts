@@ -15,7 +15,7 @@ export default class GetTransactionUseCase {
       if (error instanceof Error && error.message === "Transaction not found") {
         throw error;
       }
-      throw new Error(`Failed to fetch account: ${error}`);
+      throw new Error(error as string);
     }
   }
 }

@@ -3,7 +3,14 @@ import { accountSchema } from "../validators/accountSchema";
 import { AccountRepository } from "../../infrastructure/repositories/accountRepository";
 import { db } from "../../infrastructure/db";
 
-import type { ApiResponse } from "../types/api";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  formatZodErrors,
+  parsePaginationParams,
+  createPaginationInfo,
+} from "@repo/utils/api";
+
 import {
   CreateAccountUseCase,
   GetAccountUseCase,
@@ -17,10 +24,11 @@ export const createAccount = async (req: Request, res: Response) => {
     const validation = accountSchema.safeParse(req.body);
 
     if (!validation.success) {
-      const response: ApiResponse = {
-        message: "Invalid account data",
-        error: validation.error.message,
-      };
+      const response = createErrorResponse(
+        "Invalid account data",
+        validation.error.message,
+        formatZodErrors(validation.error)
+      );
 
       return res.status(400).json(response);
     }
@@ -29,14 +37,18 @@ export const createAccount = async (req: Request, res: Response) => {
     const useCase = new CreateAccountUseCase(accountRepo);
     const account = await useCase.execute(accountData);
 
-    const response: ApiResponse = {
-      message: "Account created successfully",
-      data: account,
-    };
+    const response = createSuccessResponse(
+      "Account created successfully",
+      account
+    );
 
     res.status(201).json(response);
   } catch (error) {
-    res.status(500).json({ message: `Failed to create account: ${error}` });
+    const response = createErrorResponse(
+      "Failed to create account",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+    res.status(500).json(response);
   }
 };
 
@@ -45,44 +57,58 @@ export const getAccount = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!id) {
-      const response: ApiResponse = {
-        message: "Account ID is required",
-      };
+      const response = createErrorResponse("Account ID is required");
       return res.status(400).json(response);
     }
 
     const useCase = new GetAccountUseCase(accountRepo);
     const account = await useCase.execute(id);
 
-    const response: ApiResponse = {
-      message: "Account fetched successfully",
-      data: account,
-    };
+    const response = createSuccessResponse(
+      "Account fetched successfully",
+      account
+    );
 
     res.status(200).json(response);
   } catch (error) {
     if (error instanceof Error && error.message === "Account not found") {
-      const response: ApiResponse = {
-        message: "Account not found",
-      };
+      const response = createErrorResponse("Account not found");
       return res.status(404).json(response);
     }
-    res.status(500).json({ message: `Failed to fetch account: ${error}` });
+    const response = createErrorResponse(
+      "Failed to fetch account",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+    res.status(500).json(response);
   }
 };
 
 export const getAccounts = async (req: Request, res: Response) => {
   try {
+    const { page = 1, limit = 10 } = parsePaginationParams(req.query);
+    const offset = (page - 1) * limit;
+
     const useCase = new GetAccountsUseCase(accountRepo);
     const accounts = await useCase.execute();
 
-    const response: ApiResponse = {
-      message: "Accounts fetched successfully",
-      data: accounts,
-    };
+    // Apply pagination to the results
+    const paginatedAccounts = accounts.slice(offset, offset + limit);
+    const total = accounts.length;
+
+    const pagination = createPaginationInfo(page, limit, total);
+
+    const response = createSuccessResponse(
+      "Accounts fetched successfully",
+      paginatedAccounts,
+      pagination
+    );
 
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ message: `Failed to fetch accounts: ${error}` });
+    const response = createErrorResponse(
+      "Failed to fetch accounts",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+    res.status(500).json(response);
   }
 };

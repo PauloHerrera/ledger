@@ -9,7 +9,13 @@ import {
   GetLoansUseCase,
   UpdateLoanUseCase,
 } from "../../application/use-cases/loan";
-import type { ApiResponse } from "../types/api";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  formatZodErrors,
+  parsePaginationParams,
+  createPaginationInfo,
+} from "@repo/utils/api";
 
 const loanRepo = new LoanRepository(db);
 const borrowerRepo = new BorrowerRepository(db);
@@ -19,10 +25,11 @@ export const createLoan = async (req: Request, res: Response) => {
     const validation = loanSchema.safeParse(req.body);
 
     if (!validation.success) {
-      const response: ApiResponse = {
-        message: "Invalid loan data",
-        error: validation.error.message,
-      };
+      const response = createErrorResponse(
+        "Invalid loan data",
+        validation.error.message,
+        formatZodErrors(validation.error)
+      );
 
       return res.status(400).json(response);
     }
@@ -31,17 +38,14 @@ export const createLoan = async (req: Request, res: Response) => {
     const useCase = new CreateLoanUseCase(loanRepo, borrowerRepo);
     const loan = await useCase.execute(loanData);
 
-    const response: ApiResponse = {
-      message: "Loan created successfully",
-      data: loan,
-    };
+    const response = createSuccessResponse("Loan created successfully", loan);
 
     res.status(201).json(response);
   } catch (error) {
-    const response: ApiResponse = {
-      message: "Failed to create loan",
-      error: error instanceof Error ? error.message : "Unknown error",
-    };
+    const response = createErrorResponse(
+      "Failed to create loan",
+      error instanceof Error ? error.message : "Unknown error"
+    );
     res.status(500).json(response);
   }
 };
@@ -51,46 +55,51 @@ export const getLoan = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!id) {
-      const response: ApiResponse = {
-        message: "Loan ID is required",
-      };
+      const response = createErrorResponse("Loan ID is required");
       return res.status(400).json(response);
     }
 
     const useCase = new GetLoanUseCase(loanRepo);
     const loan = await useCase.execute(id);
 
-    const response: ApiResponse = {
-      message: "Loan fetched successfully",
-      data: loan,
-    };
+    const response = createSuccessResponse("Loan fetched successfully", loan);
 
     res.status(200).json(response);
   } catch (error) {
-    const response: ApiResponse = {
-      message: "Failed to fetch loan",
-      error: error instanceof Error ? error.message : "Unknown error",
-    };
+    const response = createErrorResponse(
+      "Failed to fetch loan",
+      error instanceof Error ? error.message : "Unknown error"
+    );
     res.status(404).json(response);
   }
 };
 
 export const getLoans = async (req: Request, res: Response) => {
   try {
+    const { page = 1, limit = 10 } = parsePaginationParams(req.query);
+    const offset = (page - 1) * limit;
+
     const useCase = new GetLoansUseCase(loanRepo);
     const loans = await useCase.execute();
 
-    const response: ApiResponse = {
-      message: "Loans fetched successfully",
-      data: loans,
-    };
+    // Apply pagination to the results
+    const paginatedLoans = loans.slice(offset, offset + limit);
+    const total = loans.length;
+
+    const pagination = createPaginationInfo(page, limit, total);
+
+    const response = createSuccessResponse(
+      "Loans fetched successfully",
+      paginatedLoans,
+      pagination
+    );
 
     res.status(200).json(response);
   } catch (error) {
-    const response: ApiResponse = {
-      message: "Failed to fetch loans",
-      error: error instanceof Error ? error.message : "Unknown error",
-    };
+    const response = createErrorResponse(
+      "Failed to fetch loans",
+      error instanceof Error ? error.message : "Unknown error"
+    );
     res.status(500).json(response);
   }
 };
@@ -100,19 +109,18 @@ export const updateLoanStatus = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!id) {
-      const response: ApiResponse = {
-        message: "Loan ID is required",
-      };
+      const response = createErrorResponse("Loan ID is required");
       return res.status(400).json(response);
     }
 
     const validation = updateLoanStatusSchema.safeParse(req.body);
 
     if (!validation.success) {
-      const response: ApiResponse = {
-        message: "Invalid status data",
-        error: validation.error.message,
-      };
+      const response = createErrorResponse(
+        "Invalid status data",
+        validation.error.message,
+        formatZodErrors(validation.error)
+      );
 
       return res.status(400).json(response);
     }
@@ -121,17 +129,17 @@ export const updateLoanStatus = async (req: Request, res: Response) => {
     const useCase = new UpdateLoanUseCase(loanRepo);
     const loan = await useCase.execute(id, statusData);
 
-    const response: ApiResponse = {
-      message: "Loan status updated successfully",
-      data: loan,
-    };
+    const response = createSuccessResponse(
+      "Loan status updated successfully",
+      loan
+    );
 
     res.status(200).json(response);
   } catch (error) {
-    const response: ApiResponse = {
-      message: "Failed to update loan status",
-      error: error instanceof Error ? error.message : "Unknown error",
-    };
+    const response = createErrorResponse(
+      "Failed to update loan status",
+      error instanceof Error ? error.message : "Unknown error"
+    );
     res.status(500).json(response);
   }
 };

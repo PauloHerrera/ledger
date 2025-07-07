@@ -8,7 +8,13 @@ import { db } from "../../infrastructure/db";
 import { JournalRepository } from "../../infrastructure/repositories/journalRepository";
 import { EntryRepository } from "../../infrastructure/repositories/entryRepository";
 import { journalSchema } from "../validators/journalSchema";
-import type { ApiResponse, ErrorResponse } from "../types/api";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  formatZodErrors,
+  parsePaginationParams,
+  createPaginationInfo,
+} from "@repo/utils/api";
 
 const journalRepo = new JournalRepository(db);
 const entryRepo = new EntryRepository(db);
@@ -18,15 +24,11 @@ export const createJournal = async (req: Request, res: Response) => {
     const validation = journalSchema.safeParse(req.body);
 
     if (!validation.success) {
-      const errors = validation.error.errors.map((err) => ({
-        field: err.path.join("."),
-        message: err.message,
-      }));
-
-      const response: ErrorResponse = {
-        message: "Invalid journal data",
-        errors,
-      };
+      const response = createErrorResponse(
+        "Invalid journal data",
+        validation.error.message,
+        formatZodErrors(validation.error)
+      );
 
       return res.status(400).json(response);
     }
@@ -38,14 +40,18 @@ export const createJournal = async (req: Request, res: Response) => {
 
     const journal = await createJournalUseCase.execute(validation.data);
 
-    const response: ApiResponse = {
-      message: "Journal created successfully",
-      data: journal,
-    };
+    const response = createSuccessResponse(
+      "Journal created successfully",
+      journal
+    );
 
     res.status(201).json(response);
   } catch (error) {
-    res.status(500).json({ message: `Failed to create journal: ${error}` });
+    const response = createErrorResponse(
+      "Failed to create journal",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+    res.status(500).json(response);
   }
 };
 
@@ -54,51 +60,61 @@ export const getJournal = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!id) {
-      const response: ApiResponse = {
-        message: "Journal ID is required",
-      };
+      const response = createErrorResponse("Journal ID is required");
       return res.status(400).json(response);
     }
 
     const useCase = new GetJournalUseCase(journalRepo, entryRepo);
     const journal = await useCase.execute(id);
 
-    const response: ApiResponse = {
-      message: "Journal fetched successfully",
-      data: journal,
-      total: journal.entries.length,
-    };
+    const response = createSuccessResponse(
+      "Journal fetched successfully",
+      journal
+    );
 
     res.status(200).json(response);
   } catch (error) {
     if (error instanceof Error && error.message === "Journal not found") {
-      const response: ApiResponse = {
-        message: "Journal not found",
-      };
+      const response = createErrorResponse("Journal not found");
       return res.status(404).json(response);
     }
-    res.status(500).json({ message: `Failed to fetch journal: ${error}` });
+    const response = createErrorResponse(
+      "Failed to fetch journal",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+    res.status(500).json(response);
   }
 };
 
 export const getJournals = async (req: Request, res: Response) => {
   try {
     const ledgerId = req.query.ledgerId as string | undefined;
+    const { page = 1, limit = 10 } = parsePaginationParams(req.query);
+    const offset = (page - 1) * limit;
 
     const useCase = new GetJournalsUseCase(journalRepo, entryRepo);
     const journals = await useCase.execute(ledgerId);
 
-    const response: ApiResponse = {
-      message:
-        journals.length > 0
-          ? "Journals fetched successfully"
-          : "No journals found",
-      data: journals,
-      total: journals.length,
-    };
+    // Apply pagination to the results
+    const paginatedJournals = journals.slice(offset, offset + limit);
+    const total = journals.length;
+
+    const pagination = createPaginationInfo(page, limit, total);
+
+    const response = createSuccessResponse(
+      journals.length > 0
+        ? "Journals fetched successfully"
+        : "No journals found",
+      paginatedJournals,
+      pagination
+    );
 
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ message: `Failed to fetch journals: ${error}` });
+    const response = createErrorResponse(
+      "Failed to fetch journals",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+    res.status(500).json(response);
   }
 };

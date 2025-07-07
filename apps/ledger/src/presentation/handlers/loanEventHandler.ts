@@ -5,7 +5,11 @@ import { TransactionRepository } from "../../infrastructure/repositories/transac
 import { EntryRepository } from "../../infrastructure/repositories/entryRepository";
 import { JournalRepository } from "../../infrastructure/repositories/journalRepository";
 import { db } from "../../infrastructure/db";
-import type { ApiResponse } from "../types/api";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  formatZodErrors,
+} from "@repo/utils/api";
 import logger from "@repo/logger";
 
 const transactionRepository = new TransactionRepository(db);
@@ -20,10 +24,11 @@ export const createLoanEvent = async (req: Request, res: Response) => {
     const validation = eventSchema.safeParse(event);
 
     if (!validation.success) {
-      const response: ApiResponse = {
-        message: "Invalid transaction data",
-        error: validation.error.message,
-      };
+      const response = createErrorResponse(
+        "Invalid event data",
+        validation.error.message,
+        formatZodErrors(validation.error)
+      );
       return res.status(400).json(response);
     }
 
@@ -35,9 +40,15 @@ export const createLoanEvent = async (req: Request, res: Response) => {
 
     await processLoanEvent.execute(validation.data);
 
-    res.status(200).json({ message: "Event processed successfully" });
+    const response = createSuccessResponse("Event processed successfully");
+
+    res.status(200).json(response);
   } catch (error) {
     logger.error(`[Loan Event Processing] Error: ${error}`);
-    res.status(500).json({ message: "Internal server error" });
+    const response = createErrorResponse(
+      "Failed to process event",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+    res.status(500).json(response);
   }
 };

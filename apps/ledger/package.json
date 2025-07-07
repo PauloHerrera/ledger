@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@repo/logger": "workspace:*",
+    "@repo/utils": "workspace:*",
     "@supabase/supabase-js": "^2.50.2",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
