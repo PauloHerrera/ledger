@@ -16,8 +16,7 @@ export default class CreateTransactionUseCase {
 
   async execute(data: TransactionDTO): Promise<Transaction> {
     try {
-      // Validate that all accounts exist and are active
-      await this.validateAccountsExist(data.entries);
+      await this.validateAccounts(data.entries);
 
       const transaction = await this.transactionRepository.create(
         this.mapDTOToTransaction(data)
@@ -32,13 +31,16 @@ export default class CreateTransactionUseCase {
 
       return transaction;
     } catch (error) {
-      throw new Error(`Failed to create transaction: ${error}`);
+      throw new Error(error as string);
     }
   }
 
-  private async validateAccountsExist(entries: TransactionDTO['entries']): Promise<void> {
-    const accountIds = entries.map(entry => entry.accountId);
-    const uniqueAccountIds = [...new Set(accountIds)];
+  private async validateAccounts(
+    entries: TransactionDTO["entries"]
+  ): Promise<void> {
+    const uniqueAccountIds = [
+      ...new Set(entries.map((entry) => entry.accountId)),
+    ];
 
     for (const accountId of uniqueAccountIds) {
       const account = await this.accountRepository.findById(accountId);
