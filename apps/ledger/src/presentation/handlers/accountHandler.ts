@@ -15,6 +15,7 @@ import {
   CreateAccountUseCase,
   GetAccountUseCase,
   GetAccountsUseCase,
+  type GetAccountsFilters,
 } from "../../application/useCases/account";
 
 const accountRepo = new AccountRepository(db);
@@ -86,10 +87,20 @@ export const getAccount = async (req: Request, res: Response) => {
 export const getAccounts = async (req: Request, res: Response) => {
   try {
     const { page = 1, limit = 10 } = parsePaginationParams(req.query);
+    const { accountId } = req.query;
     const offset = (page - 1) * limit;
 
+    const filters: GetAccountsFilters = {};
+    
+    if (accountId) {
+      // Validate that accountId is a valid UUID if provided
+      if (typeof accountId === 'string' && accountId.length > 0) {
+        filters.accountId = accountId;
+      }
+    }
+
     const useCase = new GetAccountsUseCase(accountRepo);
-    const accounts = await useCase.execute();
+    const accounts = await useCase.execute(filters);
 
     // Apply pagination to the results
     const paginatedAccounts = accounts.slice(offset, offset + limit);

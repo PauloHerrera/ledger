@@ -1,12 +1,16 @@
 import type { IAccountRepository } from "../../../infrastructure/repositories/accountRepository";
 import type { Account } from "../../../infrastructure/db/schemas/account";
 
+export interface GetAccountsFilters {
+  accountId?: string;
+}
+
 export default class GetAccountsUseCase {
   constructor(private accountRepository: IAccountRepository) {}
 
-  async execute(): Promise<Account[]> {
+  async execute(filters?: GetAccountsFilters): Promise<Account[]> {
     try {
-      const accounts = await this.accountRepository.findAll();
+      const accounts = await this.accountRepository.findAll(filters);
       return accounts;
     } catch (error) {
       throw new Error(`Failed to fetch accounts: ${error}`);
