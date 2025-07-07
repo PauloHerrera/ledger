@@ -15,6 +15,7 @@ import {
   parsePaginationParams,
   createPaginationInfo,
 } from "@repo/utils/api";
+import { validateUUID } from "../../lib/validation";
 
 const journalRepo = new JournalRepository(db);
 const entryRepo = new EntryRepository(db);
@@ -64,6 +65,16 @@ export const getJournal = async (req: Request, res: Response) => {
       return res.status(400).json(response);
     }
 
+    // Validate UUID format
+    const uuidValidation = validateUUID(id);
+    if (!uuidValidation.isValid) {
+      const response = createErrorResponse(
+        "Invalid journal ID format",
+        uuidValidation.error
+      );
+      return res.status(400).json(response);
+    }
+
     const useCase = new GetJournalUseCase(journalRepo, entryRepo);
     const journal = await useCase.execute(id);
 
@@ -91,6 +102,18 @@ export const getJournals = async (req: Request, res: Response) => {
     const ledgerId = req.query.ledgerId as string | undefined;
     const { page = 1, limit = 10 } = parsePaginationParams(req.query);
     const offset = (page - 1) * limit;
+
+    // Validate ledgerId UUID format if provided
+    if (ledgerId) {
+      const uuidValidation = validateUUID(ledgerId);
+      if (!uuidValidation.isValid) {
+        const response = createErrorResponse(
+          "Invalid ledger ID format",
+          uuidValidation.error
+        );
+        return res.status(400).json(response);
+      }
+    }
 
     const useCase = new GetJournalsUseCase(journalRepo, entryRepo);
     const journals = await useCase.execute(ledgerId);

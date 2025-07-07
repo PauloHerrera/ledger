@@ -16,6 +16,7 @@ import {
   GetAccountUseCase,
   GetAccountsUseCase,
 } from "../../application/useCases/account";
+import { validateUUID } from "../../lib/validation";
 
 const accountRepo = new AccountRepository(db);
 
@@ -58,6 +59,16 @@ export const getAccount = async (req: Request, res: Response) => {
 
     if (!id) {
       const response = createErrorResponse("Account ID is required");
+      return res.status(400).json(response);
+    }
+
+    // Validate UUID format
+    const uuidValidation = validateUUID(id);
+    if (!uuidValidation.isValid) {
+      const response = createErrorResponse(
+        "Invalid account ID format",
+        uuidValidation.error
+      );
       return res.status(400).json(response);
     }
 
