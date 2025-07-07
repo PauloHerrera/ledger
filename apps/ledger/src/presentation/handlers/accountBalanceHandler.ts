@@ -8,6 +8,7 @@ import {
   createPaginationInfo,
 } from "@repo/utils/api";
 import { db } from "../../infrastructure/db";
+import { validateUUID } from "../../lib/validation";
 
 const entryRepo = new EntryRepository(db);
 
@@ -46,6 +47,15 @@ export const getAccountBalances = async (req: Request, res: Response) => {
     }
 
     if (ledgerId) {
+      // Validate UUID format
+      const uuidValidation = validateUUID(ledgerId as string);
+      if (!uuidValidation.isValid) {
+        const response = createErrorResponse(
+          "Invalid ledger ID format",
+          uuidValidation.error
+        );
+        return res.status(400).json(response);
+      }
       filters.ledgerId = ledgerId as string;
     }
 

@@ -14,6 +14,7 @@ import {
   createPaginationInfo,
 } from "@repo/utils/api";
 import logger from "@repo/logger";
+import { validateUUID } from "../../lib/validation";
 
 const ledgerRepo = new LedgerRepository(db);
 
@@ -56,6 +57,16 @@ export const getLedger = async (req: Request, res: Response) => {
 
     if (!id) {
       const response = createErrorResponse("Ledger ID is required");
+      return res.status(400).json(response);
+    }
+
+    // Validate UUID format
+    const uuidValidation = validateUUID(id);
+    if (!uuidValidation.isValid) {
+      const response = createErrorResponse(
+        "Invalid ledger ID format",
+        uuidValidation.error
+      );
       return res.status(400).json(response);
     }
 

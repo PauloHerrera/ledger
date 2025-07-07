@@ -7,6 +7,7 @@ import {
   formatZodErrors,
 } from "@repo/utils/api";
 import { transactionSchema } from "../validators/transactionSchema";
+import { validateUUID } from "../../lib/validation";
 import CreateTransactionUseCase from "../../application/useCases/transaction/createTransactionUseCase";
 import { TransactionEntryRepository } from "../../infrastructure/repositories/transactionEntryRepository";
 import { AccountRepository } from "../../infrastructure/repositories/accountRepository";
@@ -59,6 +60,16 @@ export const getTransaction = async (req: Request, res: Response) => {
 
     if (!id) {
       const response = createErrorResponse("Transaction ID is required");
+      return res.status(400).json(response);
+    }
+
+    // Validate UUID format
+    const uuidValidation = validateUUID(id);
+    if (!uuidValidation.isValid) {
+      const response = createErrorResponse(
+        "Invalid transaction ID format",
+        uuidValidation.error
+      );
       return res.status(400).json(response);
     }
 
