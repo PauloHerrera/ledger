@@ -24,11 +24,12 @@ export class TransactionRepository
   async findByEventType(
     eventType: string
   ): Promise<CompleteTransaction | null> {
+    const eventFilter = eventType
+      ? eq(transaction.eventType, eventType)
+      : undefined;
+
     const result = await this.db.query.transaction.findFirst({
-      where: and(
-        eq(transaction.eventType, eventType),
-        eq(transaction.status, "active")
-      ),
+      where: and(eventFilter, eq(transaction.status, "active")),
       with: {
         entries: true,
       },

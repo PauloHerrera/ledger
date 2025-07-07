@@ -15,7 +15,7 @@ export default class GetTransactionsUseCase {
 
       return transactions;
     } catch (error) {
-      throw new Error(`Failed to fetch transactions: ${error}`);
+      throw new Error(error as string);
     }
   }
 }
