@@ -24,6 +24,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@repo/database-utils": "workspace:*",
     "@repo/logger": "workspace:*",
     "@repo/utils": "workspace:*",
     "@supabase/supabase-js": "^2.50.2",

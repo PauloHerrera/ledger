@@ -10,6 +10,21 @@ import {
   transactionEntryRelations,
 } from "./schemas/transactionEntry";
 
+// Core database interface for dependency injection
+export interface IDB {
+  // Basic operations that repositories need
+  insert: (table: any) => any;
+  select: () => any;
+  update: (table: any) => any;
+  delete: (table: any) => any;
+  
+  // Transaction support
+  transaction<T>(callback: (tx: any) => Promise<T>): Promise<T>;
+  
+  // Query API for complex queries
+  query: Record<string, any>;
+}
+
 const schema = {
   account,
   accountRelations,
