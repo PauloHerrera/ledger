@@ -87,15 +87,15 @@ export const getAccount = async (req: Request, res: Response) => {
 export const getAccounts = async (req: Request, res: Response) => {
   try {
     const { page = 1, limit = 10 } = parsePaginationParams(req.query);
-    const { accountId } = req.query;
+    const { ledgerId } = req.query;
     const offset = (page - 1) * limit;
 
     const filters: GetAccountsFilters = {};
     
-    if (accountId) {
-      // Validate that accountId is a valid UUID if provided
-      if (typeof accountId === 'string' && accountId.length > 0) {
-        filters.accountId = accountId;
+    if (ledgerId) {
+      // Validate that ledgerId is a valid UUID if provided
+      if (typeof ledgerId === 'string' && ledgerId.length > 0) {
+        filters.ledgerId = ledgerId;
       }
     }
 

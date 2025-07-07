@@ -2,7 +2,7 @@ import type { IAccountRepository } from "../../../infrastructure/repositories/ac
 import type { Account } from "../../../infrastructure/db/schemas/account";
 
 export interface GetAccountsFilters {
-  accountId?: string;
+  ledgerId?: string;
 }
 
 export default class GetAccountsUseCase {
