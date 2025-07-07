@@ -7,14 +7,13 @@ import {
   GetBorrowerUseCase,
   GetBorrowersUseCase,
 } from "../../application/use-cases/borrowerUseCase";
-import type { ApiResponse } from "../types/api";
 import {
   createSuccessResponse,
   createErrorResponse,
   formatZodErrors,
   parsePaginationParams,
   createPaginationInfo,
-} from "../types/api";
+} from "@repo/utils/api";
 
 const borrowerRepo = new BorrowerRepository(db);
 
@@ -36,7 +35,10 @@ export const createBorrower = async (req: Request, res: Response) => {
     const useCase = new CreateBorrowerUseCase(borrowerRepo);
     const borrower = await useCase.execute(borrowerData);
 
-    const response = createSuccessResponse("Borrower created successfully", borrower);
+    const response = createSuccessResponse(
+      "Borrower created successfully",
+      borrower
+    );
 
     res.status(201).json(response);
   } catch (error) {
@@ -60,7 +62,10 @@ export const getBorrower = async (req: Request, res: Response) => {
     const useCase = new GetBorrowerUseCase(borrowerRepo);
     const borrower = await useCase.execute(id);
 
-    const response = createSuccessResponse("Borrower fetched successfully", borrower);
+    const response = createSuccessResponse(
+      "Borrower fetched successfully",
+      borrower
+    );
 
     res.status(200).json(response);
   } catch (error) {

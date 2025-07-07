@@ -1,13 +1,12 @@
 import type { Request, Response } from "express";
 import { GetAccountBalancesUseCase } from "../../application/useCases/account";
 import { EntryRepository } from "../../infrastructure/repositories/entryRepository";
-import type { ApiResponse } from "../types/api";
 import {
   createSuccessResponse,
   createErrorResponse,
   parsePaginationParams,
   createPaginationInfo,
-} from "../types/api";
+} from "@repo/utils/api";
 import { db } from "../../infrastructure/db";
 
 const entryRepo = new EntryRepository(db);
@@ -53,18 +52,11 @@ export const getAccountBalances = async (req: Request, res: Response) => {
     const useCase = new GetAccountBalancesUseCase(entryRepo);
     const accountBalances = await useCase.execute(filters);
 
-    // Apply pagination to the results
-    const paginatedAccountBalances = accountBalances.slice(offset, offset + limit);
-    const total = accountBalances.length;
-
-    const pagination = createPaginationInfo(page, limit, total);
-
     const response = createSuccessResponse(
       accountBalances.length > 0
         ? "Account balances fetched successfully"
         : "No account balances found",
-      paginatedAccountBalances,
-      pagination
+      accountBalances
     );
 
     res.status(200).json(response);

@@ -5,12 +5,11 @@ import { TransactionRepository } from "../../infrastructure/repositories/transac
 import { EntryRepository } from "../../infrastructure/repositories/entryRepository";
 import { JournalRepository } from "../../infrastructure/repositories/journalRepository";
 import { db } from "../../infrastructure/db";
-import type { ApiResponse } from "../types/api";
 import {
   createSuccessResponse,
   createErrorResponse,
   formatZodErrors,
-} from "../types/api";
+} from "@repo/utils/api";
 import logger from "@repo/logger";
 
 const transactionRepository = new TransactionRepository(db);

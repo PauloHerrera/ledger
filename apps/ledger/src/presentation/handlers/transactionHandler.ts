@@ -1,14 +1,11 @@
 import type { Request, Response } from "express";
 import { TransactionRepository } from "../../infrastructure/repositories/transactionRepository";
 import { db } from "../../infrastructure/db";
-import type { ApiResponse } from "../types/api";
 import {
   createSuccessResponse,
   createErrorResponse,
   formatZodErrors,
-  parsePaginationParams,
-  createPaginationInfo,
-} from "../types/api";
+} from "@repo/utils/api";
 import { transactionSchema } from "../validators/transactionSchema";
 import CreateTransactionUseCase from "../../application/useCases/transaction/createTransactionUseCase";
 import { TransactionEntryRepository } from "../../infrastructure/repositories/transactionEntryRepository";
@@ -41,7 +38,10 @@ export const createTransaction = async (req: Request, res: Response) => {
 
     const transaction = await createTransactionUseCase.execute(validation.data);
 
-    const response = createSuccessResponse("Transaction created successfully", transaction);
+    const response = createSuccessResponse(
+      "Transaction created successfully",
+      transaction
+    );
 
     res.status(201).json(response);
   } catch (error) {
@@ -65,12 +65,20 @@ export const getTransaction = async (req: Request, res: Response) => {
     const useCase = new GetTransactionUseCase(transactionRepository);
     const transaction = await useCase.execute(id as string);
 
-    const response = createSuccessResponse("Transaction fetched successfully", transaction);
+    const response = createSuccessResponse(
+      "Transaction fetched successfully",
+      transaction
+    );
 
     res.status(200).json(response);
   } catch (error) {
+    if (error instanceof Error && error.message === "Transaction not found") {
+      const response = createErrorResponse("Transaction not found");
+      return res.status(404).json(response);
+    }
+
     const response = createErrorResponse(
-      "Failed to get transaction",
+      "Failed to fetch transaction",
       error instanceof Error ? error.message : "Unknown error"
     );
     res.status(500).json(response);
@@ -88,14 +96,22 @@ export const getTransactions = async (req: Request, res: Response) => {
     const transactions = transaction ? [transaction] : [];
 
     const response = createSuccessResponse(
-      transactions.length > 0 
-        ? "Transactions fetched successfully" 
+      transactions.length > 0
+        ? "Transactions fetched successfully"
         : "No transactions found",
       transactions
     );
 
     res.status(200).json(response);
   } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message.includes("Transaction not found")
+    ) {
+      const response = createErrorResponse(error.message);
+      return res.status(404).json(response);
+    }
+
     const response = createErrorResponse(
       "Failed to get transactions",
       error instanceof Error ? error.message : "Unknown error"

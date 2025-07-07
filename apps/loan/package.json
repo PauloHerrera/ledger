@@ -28,6 +28,7 @@
     "postgres": "^3.4.7",
     "zod": "^3.25.67",
     "@repo/logger": "workspace:*",
+    "@repo/utils": "workspace:*",
     "@repo/database-utils": "workspace:*"
   }
 }

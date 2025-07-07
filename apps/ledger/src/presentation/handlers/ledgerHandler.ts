@@ -6,14 +6,13 @@ import CreateLedgerUseCase, {
 } from "../../application/useCases/ledger";
 import { ledgerSchema } from "../validators/ledgerSchema";
 import { db } from "../../infrastructure/db";
-import type { ApiResponse } from "../types/api";
 import {
   createSuccessResponse,
   createErrorResponse,
   formatZodErrors,
   parsePaginationParams,
   createPaginationInfo,
-} from "../types/api";
+} from "@repo/utils/api";
 import logger from "@repo/logger";
 
 const ledgerRepo = new LedgerRepository(db);
@@ -36,7 +35,10 @@ export const createLedger = async (req: Request, res: Response) => {
     const useCase = new CreateLedgerUseCase(ledgerRepo);
     const ledger = await useCase.execute(ledgerData);
 
-    const response = createSuccessResponse("Ledger created successfully", ledger);
+    const response = createSuccessResponse(
+      "Ledger created successfully",
+      ledger
+    );
 
     res.status(201).json(response);
   } catch (error) {
@@ -60,7 +62,10 @@ export const getLedger = async (req: Request, res: Response) => {
     const useCase = new GetLedgerUseCase(ledgerRepo);
     const ledger = await useCase.execute(id);
 
-    const response = createSuccessResponse("Ledger fetched successfully", ledger);
+    const response = createSuccessResponse(
+      "Ledger fetched successfully",
+      ledger
+    );
 
     res.status(200).json(response);
   } catch (error) {

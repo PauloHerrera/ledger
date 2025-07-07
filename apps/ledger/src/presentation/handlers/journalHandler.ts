@@ -8,14 +8,13 @@ import { db } from "../../infrastructure/db";
 import { JournalRepository } from "../../infrastructure/repositories/journalRepository";
 import { EntryRepository } from "../../infrastructure/repositories/entryRepository";
 import { journalSchema } from "../validators/journalSchema";
-import type { ApiResponse } from "../types/api";
 import {
   createSuccessResponse,
   createErrorResponse,
   formatZodErrors,
   parsePaginationParams,
   createPaginationInfo,
-} from "../types/api";
+} from "@repo/utils/api";
 
 const journalRepo = new JournalRepository(db);
 const entryRepo = new EntryRepository(db);
@@ -41,7 +40,10 @@ export const createJournal = async (req: Request, res: Response) => {
 
     const journal = await createJournalUseCase.execute(validation.data);
 
-    const response = createSuccessResponse("Journal created successfully", journal);
+    const response = createSuccessResponse(
+      "Journal created successfully",
+      journal
+    );
 
     res.status(201).json(response);
   } catch (error) {
@@ -65,7 +67,10 @@ export const getJournal = async (req: Request, res: Response) => {
     const useCase = new GetJournalUseCase(journalRepo, entryRepo);
     const journal = await useCase.execute(id);
 
-    const response = createSuccessResponse("Journal fetched successfully", journal);
+    const response = createSuccessResponse(
+      "Journal fetched successfully",
+      journal
+    );
 
     res.status(200).json(response);
   } catch (error) {

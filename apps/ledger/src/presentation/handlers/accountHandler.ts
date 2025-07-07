@@ -3,14 +3,14 @@ import { accountSchema } from "../validators/accountSchema";
 import { AccountRepository } from "../../infrastructure/repositories/accountRepository";
 import { db } from "../../infrastructure/db";
 
-import type { ApiResponse } from "../types/api";
 import {
   createSuccessResponse,
   createErrorResponse,
   formatZodErrors,
   parsePaginationParams,
   createPaginationInfo,
-} from "../types/api";
+} from "@repo/utils/api";
+
 import {
   CreateAccountUseCase,
   GetAccountUseCase,
@@ -37,7 +37,10 @@ export const createAccount = async (req: Request, res: Response) => {
     const useCase = new CreateAccountUseCase(accountRepo);
     const account = await useCase.execute(accountData);
 
-    const response = createSuccessResponse("Account created successfully", account);
+    const response = createSuccessResponse(
+      "Account created successfully",
+      account
+    );
 
     res.status(201).json(response);
   } catch (error) {
@@ -61,7 +64,10 @@ export const getAccount = async (req: Request, res: Response) => {
     const useCase = new GetAccountUseCase(accountRepo);
     const account = await useCase.execute(id);
 
-    const response = createSuccessResponse("Account fetched successfully", account);
+    const response = createSuccessResponse(
+      "Account fetched successfully",
+      account
+    );
 
     res.status(200).json(response);
   } catch (error) {

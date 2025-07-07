@@ -1,0 +1,13 @@
+{
+  "name": "@repo/utils",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A reusable utils package",
+  "devDependencies": {
+    "@types/node": "^20",
+    "@repo/typescript-config": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

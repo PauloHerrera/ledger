@@ -9,14 +9,13 @@ import {
   GetLoansUseCase,
   UpdateLoanUseCase,
 } from "../../application/use-cases/loan";
-import type { ApiResponse } from "../types/api";
 import {
   createSuccessResponse,
   createErrorResponse,
   formatZodErrors,
   parsePaginationParams,
   createPaginationInfo,
-} from "../types/api";
+} from "@repo/utils/api";
 
 const loanRepo = new LoanRepository(db);
 const borrowerRepo = new BorrowerRepository(db);
@@ -130,7 +129,10 @@ export const updateLoanStatus = async (req: Request, res: Response) => {
     const useCase = new UpdateLoanUseCase(loanRepo);
     const loan = await useCase.execute(id, statusData);
 
-    const response = createSuccessResponse("Loan status updated successfully", loan);
+    const response = createSuccessResponse(
+      "Loan status updated successfully",
+      loan
+    );
 
     res.status(200).json(response);
   } catch (error) {

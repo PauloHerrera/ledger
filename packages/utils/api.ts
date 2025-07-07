@@ -27,10 +27,12 @@ export interface PaginationParams {
 
 // Helper function to format Zod validation errors
 export const formatZodErrors = (zodError: any): ValidationError[] => {
-  return zodError.errors?.map((err: any) => ({
-    field: err.path.join('.'),
-    message: err.message,
-  })) || [];
+  return (
+    zodError.errors?.map((err: any) => ({
+      field: err.path.join("."),
+      message: err.message,
+    })) || []
+  );
 };
 
 // Helper function to create success response
@@ -74,7 +76,7 @@ export const createPaginationInfo = (
 export const parsePaginationParams = (query: any): PaginationParams => {
   const page = query.page ? parseInt(query.page as string, 10) : 1;
   const limit = query.limit ? parseInt(query.limit as string, 10) : 10;
-  
+
   return {
     page: page > 0 ? page : 1,
     limit: limit > 0 && limit <= 100 ? limit : 10, // Max 100 items per page
