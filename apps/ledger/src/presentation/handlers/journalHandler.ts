@@ -127,7 +127,6 @@ export const getJournals = async (req: Request, res: Response) => {
     const useCase = new GetJournalsUseCase(journalRepo, entryRepo);
     const journals = await useCase.execute(filters);
 
-    // Apply pagination to the results
     const paginatedJournals = journals.slice(offset, offset + limit);
     const total = journals.length;
 
