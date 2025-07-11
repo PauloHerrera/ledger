@@ -11,17 +11,21 @@ import type { Account } from "../../../infrastructure/db/schemas/account";
 import { formatDate } from "date-fns";
 import type { AccountType } from "../../types/account";
 
+export interface GetJournalsFilters {
+  startDate?: Date;
+  endDate?: Date;
+  ledgerId?: string;
+}
+
 export default class GetJournalsUseCase {
   constructor(
     private journalRepository: IJournalRepository,
     private entryRepository: IEntryRepository
   ) {}
 
-  async execute(ledgerId?: string): Promise<JournalResponseDTO[]> {
-    // 1. Find relevant journals - either all or by ledger
-    const journals = ledgerId
-      ? await this.journalRepository.findByLedgerId(ledgerId)
-      : await this.journalRepository.findAll();
+  async execute(filters?: GetJournalsFilters): Promise<JournalResponseDTO[]> {
+    // 1. Find relevant journals with filters and ordering
+    const journals = await this.journalRepository.findWithFilters(filters);
 
     // 2. For each journal fetch its entries (with account details)
     const results: CompleteJournal[] = [];
