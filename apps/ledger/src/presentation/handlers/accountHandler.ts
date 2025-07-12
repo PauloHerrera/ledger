@@ -15,7 +15,6 @@ import {
   CreateAccountUseCase,
   GetAccountUseCase,
   GetAccountsUseCase,
-  type GetAccountsFilters,
 } from "../../application/useCases/account";
 
 const accountRepo = new AccountRepository(db);
@@ -90,19 +89,9 @@ export const getAccounts = async (req: Request, res: Response) => {
     const { ledgerId } = req.query;
     const offset = (page - 1) * limit;
 
-    const filters: GetAccountsFilters = {};
-    
-    if (ledgerId) {
-      // Validate that ledgerId is a valid UUID if provided
-      if (typeof ledgerId === 'string' && ledgerId.length > 0) {
-        filters.ledgerId = ledgerId;
-      }
-    }
-
     const useCase = new GetAccountsUseCase(accountRepo);
-    const accounts = await useCase.execute(filters);
+    const accounts = await useCase.execute(ledgerId as string);
 
-    // Apply pagination to the results
     const paginatedAccounts = accounts.slice(offset, offset + limit);
     const total = accounts.length;
 

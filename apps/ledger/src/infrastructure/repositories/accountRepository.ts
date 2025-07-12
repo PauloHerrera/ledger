@@ -15,17 +15,11 @@ export class AccountRepository
   }
 
   override async findAll(filters?: { ledgerId?: string }): Promise<Account[]> {
-    if (filters?.ledgerId) {
-      // If ledgerId filter is provided, return all accounts from that ledger
-      const result = await this.db
-        .select()
-        .from(account)
-        .where(eq(account.ledgerId, filters.ledgerId));
-      return result as Account[];
-    }
-    
-    // If no filters, return all accounts
-    const result = await this.db.select().from(account);
+    const whereClause = filters?.ledgerId
+      ? eq(account.ledgerId, filters.ledgerId)
+      : undefined;
+
+    const result = await this.db.select().from(account).where(whereClause);
     return result as Account[];
   }
 }
