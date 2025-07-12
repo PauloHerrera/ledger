@@ -4,7 +4,7 @@ import type { Database } from "../db";
 export interface IBaseRepository<T, NewT extends Record<string, any>> {
   create(data: NewT): Promise<T>;
   findById(id: string): Promise<T | null>;
-  findAll(): Promise<T[]>;
+  findAll(filters?: Record<string, any>): Promise<T[]>;
 }
 
 export class BaseRepository<T, NewT extends Record<string, any>>
@@ -28,7 +28,7 @@ export class BaseRepository<T, NewT extends Record<string, any>>
     return result[0] ? (result[0] as T) : null;
   }
 
-  async findAll(): Promise<T[]> {
+  async findAll(filters?: Record<string, any>): Promise<T[]> {
     const result = await this.db.select().from(this.table);
     return result as T[];
   }

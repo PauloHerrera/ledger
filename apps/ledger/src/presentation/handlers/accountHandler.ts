@@ -86,12 +86,12 @@ export const getAccount = async (req: Request, res: Response) => {
 export const getAccounts = async (req: Request, res: Response) => {
   try {
     const { page = 1, limit = 10 } = parsePaginationParams(req.query);
+    const { ledgerId } = req.query;
     const offset = (page - 1) * limit;
 
     const useCase = new GetAccountsUseCase(accountRepo);
-    const accounts = await useCase.execute();
+    const accounts = await useCase.execute(ledgerId as string);
 
-    // Apply pagination to the results
     const paginatedAccounts = accounts.slice(offset, offset + limit);
     const total = accounts.length;
 
