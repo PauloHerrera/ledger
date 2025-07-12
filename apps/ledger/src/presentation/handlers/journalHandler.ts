@@ -88,14 +88,45 @@ export const getJournal = async (req: Request, res: Response) => {
 
 export const getJournals = async (req: Request, res: Response) => {
   try {
-    const ledgerId = req.query.ledgerId as string | undefined;
+    const { startDate, endDate, ledgerId } = req.query;
     const { page = 1, limit = 10 } = parsePaginationParams(req.query);
     const offset = (page - 1) * limit;
 
-    const useCase = new GetJournalsUseCase(journalRepo, entryRepo);
-    const journals = await useCase.execute(ledgerId);
+    const filters: {
+      startDate?: Date;
+      endDate?: Date;
+      ledgerId?: string;
+    } = {};
 
-    // Apply pagination to the results
+    if (startDate) {
+      const parsedStartDate = new Date(startDate as string);
+      if (isNaN(parsedStartDate.getTime())) {
+        const response = createErrorResponse(
+          "Invalid startDate format. Use ISO date format (YYYY-MM-DD or YYYY-MM-DDTHH:mm:ss.sssZ)"
+        );
+        return res.status(400).json(response);
+      }
+      filters.startDate = parsedStartDate;
+    }
+
+    if (endDate) {
+      const parsedEndDate = new Date(endDate as string);
+      if (isNaN(parsedEndDate.getTime())) {
+        const response = createErrorResponse(
+          "Invalid endDate format. Use ISO date format (YYYY-MM-DD or YYYY-MM-DDTHH:mm:ss.sssZ)"
+        );
+        return res.status(400).json(response);
+      }
+      filters.endDate = parsedEndDate;
+    }
+
+    if (ledgerId) {
+      filters.ledgerId = ledgerId as string;
+    }
+
+    const useCase = new GetJournalsUseCase(journalRepo, entryRepo);
+    const journals = await useCase.execute(filters);
+
     const paginatedJournals = journals.slice(offset, offset + limit);
     const total = journals.length;
 
